@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { completeTodo, deleteTodo, getAllTodos, inCompleteTodo, reviewTodo } from '../services/TodoService';
 import { useNavigate } from 'react-router-dom';
 import { isAdminUser } from '../services/AuthService';
+import { getSummary } from "../services/TodoItemService";
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 dayjs.extend(utc);
@@ -15,15 +16,26 @@ const ListTodoComponent = () => {
         listTodos();
     }, []);
 
-    function listTodos() {
-        getAllTodos()
-            .then((response) => {
-                setTodos(response.data);
-            })
-            .catch((error) => {
-                console.error(error);
-            });
+    async function listTodos() {
+        try {
+            const res = await getAllTodos();
+            const todosWithSummary = await Promise.all(
+                res.data.map(async (t) => {
+                    try {
+                        const { data: summary } = await getSummary(t.id);
+                        return { ...t, summary };
+                    } catch {
+                        // 沒細項或出錯就給預設
+                        return { ...t, summary: { total: 0, completed: 0, progress: 0 } };
+                    }
+                })
+            );
+            setTodos(todosWithSummary);
+        } catch (error) {
+            console.error(error);
+        }
     }
+
 
     function addNewTodo() {
         navigate('/add-todo');
@@ -56,6 +68,10 @@ const ListTodoComponent = () => {
             .then(() => listTodos())
             .catch((error) => console.error(error));
     }
+
+    const disableComplete =
+        todos.reviewed ||
+        (todos.summary && todos.summary.total > 0 && todos.summary.completed < todos.summary.total);
 
     return (
         <div className="max-w-5xl mx-auto py-8 px-4 min-h-screen">
@@ -173,14 +189,15 @@ const ListTodoComponent = () => {
 
                                 <button
                                     onClick={() => markCompleteTodo(todo.id)}
-                                    disabled={todo.reviewed}
-                                    className={`px-3 py-1 rounded text-sm ${todo.reviewed
-                                        ? 'bg-gray-300 text-gray-600 cursor-not-allowed'
-                                        : 'bg-green-500 hover:bg-green-600 text-white'
+                                    disabled={disableComplete}
+                                    className={`px-3 py-1 rounded text-sm ${disableComplete
+                                            ? 'bg-gray-300 text-gray-600 cursor-not-allowed'
+                                            : 'bg-green-500 hover:bg-green-600 text-white'
                                         }`}
                                 >
                                     標記完成
                                 </button>
+
                                 <button
                                     onClick={() => markInCompleteTodo(todo.id)}
                                     disabled={todo.reviewed}
