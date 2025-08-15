@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { getOverdueTodos } from '../services/TodoService';
 import { isAdminUser } from '../services/AuthService';
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+dayjs.extend(utc);
 
 const OverdueTodosComponent = () => {
   const [todos, setTodos] = useState([]);
@@ -36,7 +38,10 @@ const OverdueTodosComponent = () => {
 
               {todo.completedBy && (
                 <p className="text-sm font-semibold text-gray-600 mb-2">
-                  完成者：{todo.completedBy}｜{todo.completedAt ? dayjs(todo.completedAt).format('YYYY-MM-DD HH:mm') : '無紀錄'}
+                  完成者：{todo.completedBy}｜
+                  {todo.completedAt
+                    ? dayjs.utc(todo.completedAt).local().format('YYYY-MM-DD HH:mm')
+                    : '無紀錄'}
                 </p>
               )}
 

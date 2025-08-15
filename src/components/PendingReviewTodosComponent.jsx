@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { getPendingReviewTodos, reviewTodo } from '../services/TodoService';
 import { isAdminUser } from '../services/AuthService';
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+dayjs.extend(utc);
 
 const PendingReviewTodosComponent = () => {
   const [todos, setTodos] = useState([]);
@@ -43,7 +45,10 @@ const PendingReviewTodosComponent = () => {
 
               {/* ✅ 新增完成者資訊 */}
               <p className="text-sm font-semibold text-gray-600 mb-3">
-                完成者：{todo.completedBy}｜{todo.completedAt ? dayjs(todo.completedAt).format('YYYY-MM-DD HH:mm') : '無紀錄'}
+                完成者：{todo.completedBy}｜
+                {todo.completedAt
+                  ? dayjs.utc(todo.completedAt).local().format('YYYY-MM-DD HH:mm')
+                  : '無紀錄'}
               </p>
 
               {/* ✅ 審核按鈕 */}

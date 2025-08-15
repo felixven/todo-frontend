@@ -11,6 +11,7 @@ import RegisterComponent from './components/RegisterComponent'
 import LoginComponent from './components/LoginComponent'
 import { isUserLoggedIn } from './services/AuthService'
 import MainPageComponent from './components/MainPageComponent'
+import TodoDetail from './components/TodoDetail'
 import PendingReviewTodosComponent from './components/PendingReviewTodosComponent'
 import ReviewedTodosComponent from './components/ReviewedTodosComponent'
 import OverdueTodosComponent from './components/OverdueTodosComponent'
@@ -87,6 +88,13 @@ function App() {
           } />
 
 
+          <Route path="/todos/:id" element={
+              <AuthenticatedRoute>
+                <TodoDetail />
+              </AuthenticatedRoute>
+            }/>
+
+
           {/* http://localhost:8080/register */}
           <Route path='/register' element={<RegisterComponent />}></Route>
 
@@ -94,15 +102,15 @@ function App() {
           <Route path='/login' element={<LoginComponent />}></Route>
 
         </Routes>
-    <ToastContainer
-  position="top-center"
-  autoClose={2000}
-  hideProgressBar
-  closeOnClick
-  pauseOnHover={false}
-  draggable={false}
-  theme="light"
-/>
+        <ToastContainer
+          position="top-center"
+          autoClose={2000}
+          hideProgressBar
+          closeOnClick
+          pauseOnHover={false}
+          draggable={false}
+          theme="light"
+        />
         <FooterComponent />
       </BrowserRouter>
     </>

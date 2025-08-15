@@ -3,6 +3,8 @@ import { completeTodo, deleteTodo, getAllTodos, inCompleteTodo, reviewTodo } fro
 import { useNavigate } from 'react-router-dom';
 import { isAdminUser } from '../services/AuthService';
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+dayjs.extend(utc);
 
 const ListTodoComponent = () => {
     const [todos, setTodos] = useState([]);
@@ -116,19 +118,21 @@ const ListTodoComponent = () => {
                             )}
 
                             <p className="text-sm mb-1 font-semibold">
-  完成狀態：
-  {todo.completed ? (
-    <span className="text-green-600">
-      已完成（{todo.completedBy}｜{dayjs(todo.completedAt).format('YYYY-MM-DD HH:mm')}
-      {todo.overdue && (
-        <span className="text-red-600 ml-1">逾期</span>
-      )}
-      ）
-    </span>
-  ) : (
-    <span className="text-red-600">未完成</span>
-  )}
-</p>
+                                完成狀態：
+                                {todo.completed ? (
+                                    <span className="text-green-600">
+                                        已完成（
+                                        {todo.completedBy}｜
+                                        {dayjs.utc(todo.completedAt).local().format('YYYY-MM-DD HH:mm')}
+                                        {todo.overdue && (
+                                            <span className="text-red-600 ml-1">逾期</span>
+                                        )}
+                                        ）
+                                    </span>
+                                ) : (
+                                    <span className="text-red-600">未完成</span>
+                                )}
+                            </p>
 
 
                             {/* {todo.completed && todo.completedBy && (
@@ -186,6 +190,13 @@ const ListTodoComponent = () => {
                                         }`}
                                 >
                                     標記未完成
+                                </button>
+
+                                <button
+                                    onClick={() => navigate(`/todos/${todo.id}`)}
+                                    className="px-3 py-1 rounded text-sm bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm"
+                                >
+                                    進入任務
                                 </button>
 
                                 {isAdmin && todo.completed && !todo.reviewed && (
