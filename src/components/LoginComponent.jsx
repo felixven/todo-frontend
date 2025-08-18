@@ -2,24 +2,34 @@ import React, { useState } from 'react'
 import { loginAPICall, saveLoggedInUser, storeToken } from '../services/AuthService';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { Spinners } from './Spinner';
 
 
 const LoginComponent = () => {
   const [username, setUserName] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState(''); // ✅ 加入錯誤訊息狀態
+    const [loading, setLoading] = useState(false); 
   const navigator = useNavigate();
 
   async function handleLoginForm(e) {
     e.preventDefault();
 
+   // 避免重複送出
+    if (loading) return;             // ★ 新增：正在送出時直接忽略
+    setErrorMessage('');             // ★ 新增：送出前清錯誤
+    setLoading(true);                // ★ 新增：開始載入
+
     // ✅ 前端欄位驗證
     if (!username.trim() || !password.trim()) {
       setErrorMessage('請輸入帳號與密碼');
+      setLoading(false);            // ★ 新增：恢復載入狀態
       return;
     }
 
+
     try {
+
       const response = await loginAPICall(username, password);
       console.log(response.data);
 
@@ -50,7 +60,10 @@ const LoginComponent = () => {
       } else {
         setErrorMessage("登入失敗，請稍後再試");
       }
+    }finally {
+      setLoading(false);            // ★ 新增：結束載入（成功或失敗都會執行）
     }
+
   }
 
   return (
@@ -73,6 +86,8 @@ const LoginComponent = () => {
               placeholder="請輸入帳戶名稱或電郵"
               value={username}
               onChange={(e) => setUserName(e.target.value)}
+               autoComplete="username"            // ★ 新增：瀏覽器自動填入友善
+              disabled={loading}                 // ★ 新增：送出中鎖欄位（可選）
             />
           </div>
 
@@ -85,14 +100,29 @@ const LoginComponent = () => {
               placeholder="請輸入密碼"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+               autoComplete="current-password"    // ★ 新增
+              disabled={loading}                 // ★ 新增：送出中鎖欄位（可選）
             />
           </div>
 
-          <button
+         <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded transition"
+            disabled={loading}                   // ★ 新增：送出中禁用按鈕
+            className={`w-full font-semibold py-2 px-4 rounded transition
+              ${loading
+                ? "bg-blue-400 cursor-not-allowed text-white"
+                : "bg-blue-600 hover:bg-blue-700 text-white"}`}
+            aria-busy={loading}                  // ★ 新增：a11y
+            aria-live="polite"
           >
-            登入
+            {loading ? (
+              <span className="flex gap-2 items-center justify-center">
+                <Spinners />                      {/* 你專案的 Spinner 小元件 */}
+                登入中…
+              </span>
+            ) : (
+              "登入"
+            )}
           </button>
         </form>
       </div>

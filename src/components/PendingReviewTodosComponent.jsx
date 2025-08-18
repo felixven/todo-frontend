@@ -3,17 +3,29 @@ import { getPendingReviewTodos, reviewTodo } from '../services/TodoService';
 import { isAdminUser } from '../services/AuthService';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
+import Loader from "./Loader";
 dayjs.extend(utc);
 
 const PendingReviewTodosComponent = () => {
   const [todos, setTodos] = useState([]);
   const isAdmin = isAdminUser();
 
+  const [loading, setLoading] = useState(true); // ★ 新增：整頁載入狀態
+  const [error, setError] = useState('');
+
   // 封裝成 listTodos 方法，審核後也能重用
-  const listTodos = () => {
-    getPendingReviewTodos() // 無論是否為 admin 都要能看到
-      .then((response) => setTodos(response.data))
-      .catch((error) => console.error(error));
+  const listTodos = async () => {
+    try {
+      setLoading(true); // ★ 新增：開始載入
+      const response = await getPendingReviewTodos(); // 無論是否為 admin 都要能看到
+      setTodos(response.data || []);
+      setError('');
+    } catch (e) {
+      console.error(e);
+      setError('待審核清單載入失敗');
+    } finally {
+      setLoading(false); // ★ 新增：結束載入
+    }
   };
 
   useEffect(() => {
@@ -21,11 +33,27 @@ const PendingReviewTodosComponent = () => {
   }, [isAdmin]);
 
   // 處理審核請求
-  const handleReview = (id) => {
-    reviewTodo(id)
-      .then(() => listTodos()) // 成功後刷新列表
-      .catch((error) => console.error(error));
+   const handleReview = async (id) => {
+    try {
+      await reviewTodo(id);
+      await listTodos(); // 成功後刷新列表
+    } catch (e) {
+      console.error(e);
+      // ★ 新增：簡單提醒（不打斷 UI）
+      alert('審核失敗，請稍後重試');
+    }
   };
+
+   if (loading) return <Loader text="待審核清單載入中..." />;
+  if (error) {
+    return (
+      <div className="max-w-5xl mx-auto py-8 px-4">
+        <div className="rounded border border-red-300 bg-red-50 p-4 text-red-700">
+          {error}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-5xl mx-auto py-8 px-4">

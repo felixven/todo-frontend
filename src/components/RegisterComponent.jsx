@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import { registerAPICall } from '../services/AuthService'
-import {Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { Spinners } from './Spinner';
 
 const RegisterComponent = () => {
 
@@ -12,9 +13,10 @@ const RegisterComponent = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errors, setErrors] = useState({});
+    const [loading, setLoading] = useState(false);
     const navigator = useNavigate();
 
-    function handleRegistrationForm(e) {
+    async function handleRegistrationForm(e) {
         e.preventDefault();
 
         const newErrors = {};
@@ -45,46 +47,45 @@ const RegisterComponent = () => {
         }
 
         setErrors({});
+        if (loading) return;   // 避免重複送出
+        setLoading(true);      // 進入載入中
 
 
-        const register = { firstName, lastName, username, email, password };
-        console.log(register);//print register object
+        try {
+            const register = { firstName, lastName, username, email, password };
+            const response = await registerAPICall(register);
+            console.log(response.data);
 
-        registerAPICall(register)
-            .then((response) => {
-                console.log(response.data);
-                toast.success(
-                    <div>
-                        註冊成功，請前往{' '}
-                        <Link to="/login" className="underline text-blue-600 hover:text-blue-800">
-                            登入
-                        </Link>
-                    </div>,
-                    {
-                        autoClose: 2000, // ⏱️ 顯示兩秒
-                    }
-                );
-                setTimeout(() => {
-                    navigator('/login');
-                }, 2000); // 🚪 自動導向登入頁
-            }).catch((error) => {
-                const backendMessage = error.response?.data?.message;
+            toast.success(
+                <div>
+                    註冊成功，請前往{' '}
+                    <Link to="/login" className="underline text-blue-600 hover:text-blue-800">
+                        登入
+                    </Link>
+                </div>,
+                { autoClose: 2000 }
+            );
 
-                if (backendMessage === "Username is already exists!") {
-                    setErrors({ username: "帳號名稱已被使用" });
-                } else if (backendMessage === "Email is already exists") {
-                    setErrors({ email: "電子郵件已被註冊" });
-                } else if (backendMessage === "Invalid email format") {
-                    setErrors({ email: "請輸入正確的電子郵件格式" });
-                } else if (backendMessage === "Password must be at least 8 characters") {
-                    setErrors({ password: "密碼至少需要 8 碼" });
-                } else {
-                    setErrors({ general: "註冊失敗，請稍後再試。" });
-                }
-            });
-        // .catch((error) => {
-        //     console.error(error);
-        // });
+            setTimeout(() => {
+                navigator('/login');
+            }, 2000);
+        } catch (error) {
+            const backendMessage = error.response?.data?.message;
+
+            if (backendMessage === "Username is already exists!") {
+                setErrors({ username: "帳號名稱已被使用" });
+            } else if (backendMessage === "Email is already exists") {
+                setErrors({ email: "電子郵件已被註冊" });
+            } else if (backendMessage === "Invalid email format") {
+                setErrors({ email: "請輸入正確的電子郵件格式" });
+            } else if (backendMessage === "Password must be at least 8 characters") {
+                setErrors({ password: "密碼至少需要 8 碼" });
+            } else {
+                setErrors({ general: "註冊失敗，請稍後再試。" });
+            }
+        } finally {
+            setLoading(false); // ✅ 無論成功失敗都結束 loading
+        }
     }
 
     return (
@@ -105,6 +106,8 @@ const RegisterComponent = () => {
                             placeholder="請輸入姓氏"
                             value={lastName}
                             onChange={(e) => setLastName(e.target.value)}
+                            disabled={loading}
+                            autoComplete="lastname"
                         />
                         {errors.lastName && <p className="text-red-500 text-sm mt-1">{errors.lastName}</p>}
 
@@ -119,6 +122,8 @@ const RegisterComponent = () => {
                             placeholder="請輸入名字"
                             value={firstName}
                             onChange={(e) => setFirstName(e.target.value)}
+                            disabled={loading}
+                            autoComplete="firstname"
                         />
                         {errors.firstName && <p className="text-red-500 text-sm mt-1">{errors.firstName}</p>}
 
@@ -133,6 +138,8 @@ const RegisterComponent = () => {
                             placeholder="請輸入帳號名稱"
                             value={username}
                             onChange={(e) => setUserName(e.target.value)}
+                            disabled={loading}
+                            autoComplete="username"
                         />
                         {errors.username && <p className="text-red-500 text-sm mt-1">{errors.username}</p>}
                     </div>
@@ -146,6 +153,8 @@ const RegisterComponent = () => {
                             placeholder="請輸入電子郵件"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
+                            disabled={loading}
+                            autoComplete="email"
                         />
                         {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
                     </div>
@@ -159,6 +168,8 @@ const RegisterComponent = () => {
                             placeholder="請輸入密碼"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
+                            disabled={loading}
+                            autoComplete="password"
                         />
                         {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
                     </div>
@@ -173,11 +184,22 @@ const RegisterComponent = () => {
                             className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
                             onClick={(e) => handleRegistrationForm(e)}
                         > */}
+                    
                         <button
                             type="submit"
-                            className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+                            disabled={loading}
+                            className={`w-full font-semibold py-2 px-4 rounded transition
+                                 ${loading ? "bg-blue-400 cursor-not-allowed text-white"
+                                    : "bg-blue-600 hover:bg-blue-700 text-white"}`}
+                            aria-busy={loading}
                         >
-                            送出
+                            {loading ? (
+                                <span className="flex items-center justify-center gap-2">
+                                    <Spinners /> 註冊中…
+                                </span>
+                            ) : (
+                                "送出"
+                            )}
                         </button>
                     </div>
                 </form>

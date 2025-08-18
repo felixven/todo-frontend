@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
-import { getTodo, completeTodo, inCompleteTodo, reviewTodo } from "../services/TodoService"; // 路徑依專案調整
+import { getTodo, completeTodo, inCompleteTodo, reviewTodo, getParticipation } from "../services/TodoService"; // 路徑依專案調整
 import { isAdminUser } from "../services/AuthService";
 import TodoItems from "./TodoItems";
-import MessageComponent from "./MessageComponent"; 
+import MessageComponent from "./MessageComponent";
+import Loader from './Loader'
 dayjs.extend(utc);
 
 export default function TodoDetail() {
@@ -17,10 +18,45 @@ export default function TodoDetail() {
   // 由子元件回報的 items summary
   const [itemsSummary, setItemsSummary] = useState({ total: 0, completed: 0 });
 
+  // ★ 新增：參與度狀態（沿用你先前的簡單資料結構）
+  const [participation, setParticipation] = useState([]);
+  const [pLoading, setPLoading] = useState(true);
+
+  // ★ 新增：抽出獨立的參與度抓取函式（供載入與 itemsSummary 變更時重抓）
+  const fetchParticipation = async () => {
+    setPLoading(true);
+    try {
+      // 後端回傳 Map<String, Long>（username -> count）
+      const res = await getParticipation(id);
+      const map = res?.data || {};
+      const total = Object.values(map).reduce((a, b) => a + (Number(b) || 0), 0);
+
+      // 轉成前端易渲染的陣列
+      const list = Object.entries(map).map(([username, count]) => {
+        const cnt = Number(count) || 0;
+        const pct = total > 0 ? (cnt / total) * 100 : 0;
+        return {
+          username,
+          count: cnt,
+          percentage: pct,
+        };
+      });
+
+      setParticipation(list);
+    } catch (e) {
+      setParticipation([]);
+    }
+    setPLoading(false);
+  };
+
   const load = async () => {
+    // === 原本的任務載入 ===
     const { data } = await getTodo(id);
     setTodo(data);
     setLoading(false);
+
+    // ★ 新增：同時抓取參與度
+    await fetchParticipation();
   };
 
   useEffect(() => {
@@ -29,7 +65,14 @@ export default function TodoDetail() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
-  if (loading) return <div className="p-6">載入中…</div>;
+  // ★ 新增：只要細項摘要改變（使用者在本頁勾/取消 item），就即時刷新參與度
+  useEffect(() => {
+    // 避免第一次 todo 還沒載入就打；若你希望更嚴謹，可加：if (!todo) return;
+    fetchParticipation();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [itemsSummary.completed, itemsSummary.total]);
+
+  if (loading) return <Loader text="任務資料載入中..." />;
   if (!todo) return <div className="p-6">找不到任務</div>;
 
   const dueInDays = todo.dueDate ? dayjs(todo.dueDate).diff(dayjs(), "day") : null;
@@ -51,38 +94,55 @@ export default function TodoDetail() {
         <h1 className="mb-2 text-2xl font-bold">{todo.title}</h1>
         <p className="mb-4 whitespace-pre-wrap text-gray-700">{todo.description}</p>
 
-        <div className="grid grid-cols-1 gap-3 text-sm sm:grid-cols-2">
-          {todo.createdDate && <div>建立日期：{dayjs(todo.createdDate).format("YYYY-MM-DD")}</div>}
-          {todo.dueDate && (
-            <div>
-              截止日期：{todo.dueDate}
-              {dueInDays < 0 && !todo.completed ? (
-                <span className="ml-1 text-red-600">| 已逾期</span>
-              ) : !todo.completed ? (
-                <span className="ml-1 text-gray-600">｜剩 {dueInDays} 天</span>
-              ) : null}
-            </div>
+        {/* 基本資訊（保持直式顯示） */}
+<div className="space-y-2 text-sm">
+  {todo.createdDate && (
+    <div>
+      建立日期：{dayjs(todo.createdDate).format("YYYY-MM-DD")}
+    </div>
+  )}
+
+  {todo.dueDate && (
+    <div>
+      截止日期：{dayjs(todo.dueDate).format("YYYY-MM-DD")}
+      {!todo.completed && (
+        <>
+          {dueInDays < 0 ? (
+            <span className="ml-1 text-red-600">| 已逾期</span>
+          ) : (
+            <span className="ml-1 text-gray-600">｜剩 {dueInDays} 天</span>
           )}
-          <div className="col-span-full">
-            完成狀態：
-            {todo.completed ? (
-              <span className="text-green-600">
-                已完成（{todo.completedBy}｜
-                {todo.completedAt ? dayjs.utc(todo.completedAt).local().format("YYYY-MM-DD HH:mm") : "—"}
-                {todo.overdue && <span className="ml-1 text-red-600">逾期</span>}
-                ）
-              </span>
-            ) : (
-              <span className="text-red-600">未完成</span>
-            )}
-          </div>
-          {todo.reviewed && (
-            <div className="col-span-full">
-              審核：{todo.reviewedBy || "—"} ｜{" "}
-              {todo.reviewedAt ? dayjs.utc(todo.reviewedAt).local().format("YYYY-MM-DD HH:mm") : "—"}
-            </div>
-          )}
-        </div>
+        </>
+      )}
+    </div>
+  )}
+
+  <div>
+    完成狀態：
+    {todo.completed ? (
+      <span className="text-green-600">
+        已完成（{todo.completedByName || "—"}｜
+        {todo.completedAt
+          ? dayjs.utc(todo.completedAt).local().format("YYYY-MM-DD HH:mm")
+          : "—"}
+        {todo.overdue && <span className="ml-1 text-red-600">逾期</span>}
+        ）
+      </span>
+    ) : (
+      <span className="text-red-600">未完成</span>
+    )}
+  </div>
+
+  {todo.reviewed && (
+    <div>
+      審核：{todo.reviewedBy || "—"} ｜{" "}
+      {todo.reviewedAt
+        ? dayjs.utc(todo.reviewedAt).local().format("YYYY-MM-DD HH:mm")
+        : "—"}
+    </div>
+  )}
+</div>
+
 
         <div className="mt-4 flex flex-wrap gap-2">
           <button
@@ -137,6 +197,85 @@ export default function TodoDetail() {
             </div>
           )}
         </div>
+      </div>
+
+      {/* 參與度（2×2 bar + %（個人/總）） */}
+      <div className="mt-6 rounded border border-gray-200 bg-white p-4">
+        <div className="mb-2 border-b pb-2 text-sm font-medium text-gray-700">
+          參與度
+        </div>
+
+        {pLoading ? (
+          // ★ 新增：簡單骨架（不引入任何套件）
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-pulse">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="rounded-lg border border-gray-200 p-3">
+                <div className="mb-2 h-4 w-28 rounded bg-gray-200" />
+                <div className="h-2 w-full rounded bg-gray-200" />
+              </div>
+            ))}
+          </div>
+        ) : participation.length === 0 ? (
+          <div className="text-gray-500">目前尚無參與紀錄</div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {(() => {
+              // ★ 新增：計算總完成細項數（若後端沒給 total，用前端加總）
+              const total =
+                participation.reduce((a, p) => a + (Number(p?.count) || 0), 0) ||
+                0;
+
+              return participation.map((p, i) => {
+                // 名稱容錯（目前你用 username，保留退回路徑）
+                const name =
+                  p?.firstName ?? p?.username ?? p?.name ?? p?.userName ?? "—";
+                const count = Number(p?.count) || 0;
+
+                // 百分比：若後端已計算則直接用，否則以 count/total 推
+                const rawPct = Number(p?.percentage);
+                const pct = Number.isFinite(rawPct)
+                  ? rawPct
+                  : total > 0
+                  ? (count / total) * 100
+                  : 0;
+                const pctClamped = Math.max(0, Math.min(100, pct));
+
+                return (
+                  <div
+                    key={i}
+                    className="flex flex-col gap-2 rounded-lg border border-gray-200 p-3"
+                  >
+                    <div className="flex items-center justify-between text-sm">
+                      {/* 名稱固定寬度避免被擠掉，超長時省略號 */}
+                      <span
+                        className="w-32 shrink-0 truncate font-medium text-gray-700"
+                        title={name}
+                      >
+                        {name}
+                      </span>
+                      {/* 顯示 百分比（個人完成/總完成） */}
+                      <span className="tabular-nums text-gray-600">
+                        {Math.round(pctClamped)}%（{count}/{total}）
+                      </span>
+                    </div>
+
+                    {/* bar */}
+                    <div className="h-2 w-full rounded bg-gray-200" aria-hidden>
+                      <div
+                        className="h-2 rounded bg-blue-500"
+                        style={{ width: `${pctClamped}%` }}
+                        aria-valuenow={pctClamped}
+                        aria-valuemin={0}
+                        aria-valuemax={100}
+                        role="progressbar"
+                      />
+                    </div>
+                  </div>
+                );
+              });
+            })()}
+          </div>
+        )}
       </div>
 
       {/* 留言板 */}

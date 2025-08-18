@@ -119,29 +119,35 @@ const MessageComponent = ({ todoId }) => {
       )}
 
       {/* 送出區 */}
-      <form onSubmit={onSubmit} className="flex gap-2">
-        <div className="w-full">
-          <textarea
-            value={text}
-            onChange={(e) => setText(e.target.value.slice(0, MAX_LEN))}
-            placeholder="寫點什麼…（Enter 送出，Shift+Enter 換行）"
-            rows={2}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey) onSubmit(e);
-            }}
-            maxLength={MAX_LEN}
-            className="w-full resize-y rounded-lg border border-gray-300 p-2 text-sm outline-none focus:ring-2 focus:ring-indigo-300"
-          />
-          <div className="mt-1 text-right text-xs text-gray-500">{remaining} / {MAX_LEN}</div>
-        </div>
+      <form onSubmit={onSubmit} className="flex items-end gap-2">
+        {/* 左邊 textarea */}
+        <textarea
+          value={text}
+          onChange={(e) => setText(e.target.value.slice(0, MAX_LEN))}
+          placeholder="寫點什麼…（Enter 送出，Shift+Enter 換行）"
+          rows={2}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !e.shiftKey) onSubmit(e);
+          }}
+          maxLength={MAX_LEN}
+          className="flex-1 resize-y rounded-lg border border-gray-300 p-2 text-sm outline-none focus:ring-2 focus:ring-indigo-300"
+        />
 
+        {/* 右邊送出按鈕，比 textarea 矮一些 */}
         <button
           disabled={!canSend}
-          className="shrink-0 rounded-lg bg-indigo-600 px-3 text-sm font-semibold text-white disabled:opacity-50"
+          className="inline-flex items-center justify-center shrink-0 whitespace-nowrap
+               h-8 px-3 rounded-md bg-indigo-600 text-xs font-semibold text-white
+               disabled:opacity-50"
         >
           {sending ? "送出中…" : "送出"}
         </button>
       </form>
+
+      {/* 字數提示分開 */}
+      <div className="mt-1 text-right text-xs text-gray-500">{remaining} / {MAX_LEN}</div>
+
+
     </div>
   );
 };

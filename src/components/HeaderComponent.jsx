@@ -10,10 +10,10 @@ const HeaderComponent = () => {
   const isAuth = isUserLoggedIn();
   const navigate = useNavigate();
 
-  function handleLogout() {
-    logOut();
-    navigate('/login');
-  }
+  const handleLogout = () => {
+  logOut();
+  navigate('/login');
+};
 
   return (
     <header className="sticky top-0 z-50 bg-gray-800 text-white shadow-md">
@@ -33,6 +33,15 @@ const HeaderComponent = () => {
               className="hover:text-gray-300 transition"
             >
               所有任務
+            </NavLink>
+          )}
+
+          {isAuth && (
+            <NavLink
+              to="/leaderboard"
+              className="hover:text-gray-300 transition"
+              >
+                排行榜
             </NavLink>
           )}
         </div>

@@ -5,6 +5,7 @@ import { isAdminUser } from '../services/AuthService';
 import { getSummary } from "../services/TodoItemService";
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
+import Loader from "./Loader";
 dayjs.extend(utc);
 
 const ListTodoComponent = () => {
@@ -12,12 +13,16 @@ const ListTodoComponent = () => {
     const navigate = useNavigate();
     const isAdmin = isAdminUser();
 
+    const [loading, setLoading] = useState(true);   // ★ 新增
+    const [error, setError] = useState("");
+
     useEffect(() => {
         listTodos();
     }, []);
 
     async function listTodos() {
         try {
+            setLoading(true);
             const res = await getAllTodos();
             const todosWithSummary = await Promise.all(
                 res.data.map(async (t) => {
@@ -31,9 +36,14 @@ const ListTodoComponent = () => {
                 })
             );
             setTodos(todosWithSummary);
+            setError("");
         } catch (error) {
             console.error(error);
+            setError("任務清單載入失敗");
         }
+        finally {
+      setLoading(false); // ★ 新增：結束載入
+    }
     }
 
 
@@ -69,9 +79,16 @@ const ListTodoComponent = () => {
             .catch((error) => console.error(error));
     }
 
-    const disableComplete =
-        todos.reviewed ||
-        (todos.summary && todos.summary.total > 0 && todos.summary.completed < todos.summary.total);
+    if (loading) return <Loader text="任務清單載入中..." />;
+    if (error) {
+        return (
+            <div className="max-w-5xl mx-auto py-8 px-4 min-h-screen">
+                <div className="rounded border border-red-300 bg-red-50 p-4 text-red-700">
+                    {error}
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="max-w-5xl mx-auto py-8 px-4 min-h-screen">
@@ -91,6 +108,12 @@ const ListTodoComponent = () => {
             <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-8">
                 {todos.map((todo) => {
                     const dueInDays = todo.dueDate ? dayjs(todo.dueDate).diff(dayjs(), 'day') : null;
+
+                    const disableComplete =
+                        todo.reviewed ||
+                        (todo.summary && todo.summary.total > 0 && todo.summary.completed < todo.summary.total);
+
+                    const disableIncomplete = disableComplete || !todo.completed;
 
                     // 根據截止日期計算卡片背景色
                     const cardStyle = dueInDays !== null && !todo.completed
@@ -137,12 +160,11 @@ const ListTodoComponent = () => {
                                 完成狀態：
                                 {todo.completed ? (
                                     <span className="text-green-600">
-                                        已完成（
-                                        {todo.completedBy}｜
-                                        {dayjs.utc(todo.completedAt).local().format('YYYY-MM-DD HH:mm')}
-                                        {todo.overdue && (
-                                            <span className="text-red-600 ml-1">逾期</span>
-                                        )}
+                                        已完成（{todo.completedByName || "—"}｜
+                                        {todo.completedAt
+                                            ? dayjs.utc(todo.completedAt).local().format("YYYY-MM-DD HH:mm")
+                                            : "—"}
+                                        {todo.overdue && <span className="ml-1 text-red-600">逾期</span>}
                                         ）
                                     </span>
                                 ) : (
@@ -191,27 +213,30 @@ const ListTodoComponent = () => {
                                     onClick={() => markCompleteTodo(todo.id)}
                                     disabled={disableComplete}
                                     className={`px-3 py-1 rounded text-sm ${disableComplete
-                                            ? 'bg-gray-300 text-gray-600 cursor-not-allowed'
-                                            : 'bg-green-500 hover:bg-green-600 text-white'
+                                        ? 'bg-gray-300 text-gray-600 cursor-not-allowed'
+                                        : 'bg-green-500 hover:bg-green-600 text-white'
                                         }`}
                                 >
                                     標記完成
                                 </button>
 
+
                                 <button
                                     onClick={() => markInCompleteTodo(todo.id)}
-                                    disabled={todo.reviewed}
-                                    className={`px-3 py-1 rounded text-sm ${todo.reviewed
+                                    disabled={disableIncomplete}
+                                    className={`px-3 py-1 rounded text-sm ${disableIncomplete
                                         ? 'bg-gray-300 text-gray-600 cursor-not-allowed'
                                         : 'bg-gray-500 hover:bg-gray-600 text-white'
                                         }`}
+                                    title={disableIncomplete ? '需符合完成條件且任務已完成' : ''}
                                 >
                                     標記未完成
                                 </button>
 
+
                                 <button
                                     onClick={() => navigate(`/todos/${todo.id}`)}
-                                    className="px-3 py-1 rounded text-sm bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm"
+                                    className="px-3 py-1 rounded text-sm bg-blue-600 hover:bg-blue-700 text-white"
                                 >
                                     進入任務
                                 </button>

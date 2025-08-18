@@ -43,6 +43,7 @@ export const getReviewedTodos      = ()           => axios.get(`${BASE_REST_API_
 export const reviewTodo            = (id)         => axios.put(`${BASE_REST_API_URL}/${id}/review`);
 export const getTodoStatistics     = ()           => axios.get(`${BASE_REST_API_URL}/stats`);
 export const getOverdueTodos       = ()           => axios.get(`${BASE_REST_API_URL}/overdue`);
+export const getParticipation = (id)          =>axios.get(`${BASE_REST_API_URL}/${id}/participation`);
 
   // export const getAllTodos = () => axios.get(BASE_REST_API_URL)
 

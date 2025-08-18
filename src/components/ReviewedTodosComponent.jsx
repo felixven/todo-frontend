@@ -1,17 +1,39 @@
 import React, { useEffect, useState } from 'react';
 import { getReviewedTodos } from '../services/TodoService';
 import dayjs from 'dayjs';
+import Loader from "./Loader";
 
 const ReviewedTodosComponent = () => {
   const [todos, setTodos] = useState([]);
+  const [loading, setLoading] = useState(true); // ★ 新增：整頁載入狀態
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    getReviewedTodos()
-      .then((response) => {
-        setTodos(response.data);
-      })
-      .catch((error) => console.error(error));
+    (async () => {
+      setLoading(true);                         // ★ 開始載入
+      try {
+        const res = await getReviewedTodos();
+        setTodos(res?.data ?? []);
+        setError('');
+      } catch (e) {
+        console.error('已審核任務載入失敗', e);
+        setError('已審核任務載入失敗');
+      } finally {
+        setLoading(false);                      // ★ 結束載入
+      }
+    })();
   }, []);
+
+  if (loading) return <Loader text="已審核任務載入中..." />;
+  if (error) {
+    return (
+      <div className="max-w-5xl mx-auto py-8 px-4">
+        <div className="rounded border border-red-300 bg-red-50 p-4 text-red-700">
+          {error}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-5xl mx-auto py-8 px-4">
@@ -25,10 +47,10 @@ const ReviewedTodosComponent = () => {
               <h3 className="text-xl font-bold mb-2">{todo.title}</h3>
               <p className="text-gray-700 mb-2">{todo.description}</p>
               <p className="text-sm font-semibold">
-                完成狀態：{todo.completed ? '✅ 已完成' : '❌ 未完成'}
+                完成狀態：{todo.completed ? '已完成' : '未完成'}
               </p>
               <p className="text-sm font-semibold mt-1">
-                審核狀態：{todo.reviewed ? '✅ 已審核' : '❌ 未審核'}
+                審核狀態：{todo.reviewed ? '已審核' : '未審核'}
               </p>
               <p className="text-sm mt-1">截止日：{dayjs(todo.dueDate).format('YYYY-MM-DD')}</p>
             </div>
