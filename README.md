@@ -69,6 +69,26 @@
 - React.js
 - Tailwind.css
 
+## 本機安裝與使用（Frontend｜Vite + React）
+
+1. 取得原始碼  
+   ```bash
+   git clone https://github.com/yourname/todo-frontend.git
+   cd todo-frontend
+   ```
+2. 安裝套件
+   ```bash
+   npm install
+   ```
+3. 設定環境變數，在專案根目錄建立 `.env` 檔案，並加入以下內容：  
+   ```env
+   VITE_API_BASE_URL=http://localhost:8080/api
+   ```
+5. 啟動伺服器
+   ```bash
+   npm run dev
+   ```
+
 
 
 
