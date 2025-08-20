@@ -69,7 +69,7 @@
 - React.js
 - Tailwind.css
 
-## 本機安裝與使用（Frontend｜Vite + React）
+## 本機安裝
 
 1. 取得原始碼  
    ```bash
