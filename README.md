@@ -65,8 +65,9 @@
 <br/>
 
 # 建構技術
-- React
-- Tailwind
+- Vite
+- React.js
+- Tailwind.css
 
 
 
