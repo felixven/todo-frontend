@@ -80,7 +80,7 @@
    ```bash
    npm install
    ```
-3. 設定環境變數，在專案根目錄建立 `.env` 檔案，並加入以下內容：  
+3. 設定環境變數，在專案根目錄找到 `.env` 檔案，加入以下內容： 
    ```env
    VITE_API_BASE_URL=http://localhost:8080/api
    ```
