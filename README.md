@@ -1,8 +1,74 @@
-# React + Vite
+# 任務管理系統（Todo Management System）
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# 系統介紹
+- 本專案為 **任務管理系統（Task Management System）**，由練習基礎語法的 Todo Management System 延伸而來，後續嘗試將工作中接觸到的技術與研究概念融入系統設計，進一步擴充功能與介面。  
+- 系統採用 **前後端分離架構** 開發：前端以 **React.js** 建立使用者介面，後端則以 **Spring Boot + MySQL** 開發 API 服務。  
+- 功能涵蓋任務的新增、編輯、參與、刪除與完成，以及任務資訊與進度的即時呈現。 
+- 本檔案為 **前端原始碼**，後端原始碼請見：(link)
 
-Currently, two official plugins are available:
+# 功能介紹
+- 使用者驗證：註冊、登入、登出，並支援表單驗證密碼、Email 格式、重複帳號。
+- 任務管理：新增、編輯、刪除與檢視任務，任務「完成」及「未完成」相關之按鈕點擊，顯示任務建立日期、截止日期與剩餘天數。
+- 角色權限：依照使用者角色（Admin / User）顯示不同功能與操作介面。
+- 任務完成：任務完成鍵記錄使用者任務完成次數。
+- 任務參與：擁有子任務的任務會以形式呈現子任務，透過機制驗證記錄各使用者之團隊參與度。
+- 逾期提醒：任務逾期時自動標記提示。
+- 完成/待審核流程：任務完成後需審核，介面顯示完成者與審核者資訊（姓名與時間）。
+- 即時統計儀表板：顯示任務總數、完成狀態、待審核與逾期統計。
+- 排行榜：提供「協作榜」與「完成者榜」，並可展開查看明細。
+- **Admin** 權限特有之操作功能與介面：
+  - 新增和編輯任務名稱、任務說明和截止日期。
+  - 為「大任務（Todo）」安排多項「子任務（Todo Item）」
+  - 刪除任務及審核被完成的任務
+- 所有使用者可操作之功能與介面：
+  - 檢視任務主頁、任務詳情、任務進度及任務參與度
+  - 參與各項任務的子任務Check List
+  - 「完成」任務，原完成任務者可取消完成（點擊任務的「未完成」鍵）任務
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+# 系統展示
+
+**系統網址**  
+[www.ff.com](http://www.ff.com)
+
+**測試帳號 / 密碼**
+<br>
+登入頁面輸入 **帳號或電郵** 和密碼 即可
+
+| Role   | 帳號   | 電郵                     |密碼      |
+|--------|-------|-------------------------|----------|
+| Admin  | admin | admin@example.com       |admin123  |
+| User   |  user | user@example.com        |user123   |
+
+### 任務新增、編輯、刪除（Admin權限）
+<br/>
+
+### 顯示任務建立日期、截止日期和剩餘天數
+<br/>
+
+### 任務「參與」、「完成」、「未完成」
+曾參與過任務的使用者才有權限編輯任務之「完成」狀態，只有任務完成者才能將任務修改為「未完成」狀態
+<br/>
+<br/>
+
+### 顯示任務完成進度、參與度
+擁有細項之參與度才會選擇參與度
+<br/><br/>
+
+### 任務審核（Admin權限）
+被審核之任務會顯示審核資訊，並且不得再進行編輯、參與及更改完成狀態
+<br/><br/>
+
+### 排行榜
+協作榜：各使用者參與過**參與者大於1**的任務才會被計算參與次數，點擊數字可以開啟查詢任務資訊
+<br/>
+完成者榜：曾點擊「完成」任務之次數
+<br/>
+
+# 建構技術
+- React
+- Tailwind
+
+
+
+
+
