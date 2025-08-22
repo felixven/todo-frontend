@@ -173,27 +173,27 @@ const TodoComponent = () => {
                     const marked = pendingDeletes.has(it.id);
                     return (
                       <div key={it.id} className="flex items-center gap-2">
-  <input
-    value={it.title}
-    readOnly
-    className={`flex-1 border px-3 py-2 rounded ${
-      marked
-        ? "bg-red-50 border-red-300 text-red-700"
-        : "bg-gray-50 border-gray-200 text-gray-700"
-    }`}
-  />
-  <button
-    type="button"
-    onClick={() => togglePendingDelete(it.id)}
-    className={`inline-flex items-center justify-center shrink-0 whitespace-nowrap
-                h-8 px-2 rounded-md border text-xs font-medium
-                ${marked ? "text-gray-700 border-gray-300" : "text-red-600 border-red-300"}
-                hover:bg-gray-100`}
-    title={marked ? "取消預刪除" : "預刪除"}
-  >
-    {marked ? "還原" : "預刪除"}
-  </button>
-</div>
+                        <input
+                          value={it.title}
+                          readOnly
+                          className={`flex-1 border px-3 py-2 rounded ${marked
+                            ? "bg-red-50 border-red-300 text-red-700"
+                            : "bg-gray-50 border-gray-200 text-gray-700"
+                            }`}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => togglePendingDelete(it.id)}
+                          className={`btn btn-md border
+                        ${marked ? "text-gray-700 border-gray-300 hover:bg-gray-50 focus:ring-gray-300"
+                              : "text-status-overdue border-status-overdue/60 hover:bg-status-overdue/10 focus:ring-status-overdue/20"
+                            }`}
+                          title={marked ? "取消預刪除" : "刪除"}
+                        >
+                          {marked ? "還原" : "刪除"}
+                        </button>
+
+                      </div>
 
                     );
                   })
@@ -213,22 +213,23 @@ const TodoComponent = () => {
                     placeholder={`細項 #${idx + 1}`}
                     className="w-full border border-gray-300 px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
-                 <button
-  type="button"
-  onClick={() => onRemoveRow(idx)}
-  className="inline-flex items-center justify-center shrink-0 whitespace-nowrap
-             h-8 px-2 rounded-md border text-xs text-gray-700 hover:bg-gray-100"
-  title="移除這列"
->
-  移除
-</button>
+                  <button
+                    type="button"
+                    onClick={() => onRemoveRow(idx)}
+                    className="btn btn-md bg-white font-normal text-gray-800
+             border-[0.5px] border-status-overdue/50
+             hover:bg-status-overdue/5 focus:ring-status-overdue/20"
+                    title="移除這列"
+                  >
+                    清空
+                  </button>
 
                 </div>
               ))}
               <button
                 type="button"
                 onClick={onAddRow}
-                className="mt-1 rounded bg-indigo-600 px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-700"
+                className='btn-primary btn-md'
               >
                 + 新增一列
               </button>

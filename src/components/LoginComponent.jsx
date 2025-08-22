@@ -12,7 +12,7 @@ const LoginComponent = () => {
     const [loading, setLoading] = useState(false); 
   const navigator = useNavigate();
 
-  async function handleLoginForm(e) {
+ const handleLoginForm = async (e) => {
     e.preventDefault();
 
    // 避免重複送出
@@ -63,8 +63,7 @@ const LoginComponent = () => {
     }finally {
       setLoading(false);            // ★ 新增：結束載入（成功或失敗都會執行）
     }
-
-  }
+  };
 
   return (
     <div className="flex items-center justify-center min-h-[calc(100vh-4rem)] pt-10 bg-gray-100">

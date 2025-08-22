@@ -129,8 +129,8 @@ const LeaderBoardComponent = () => {
           onClick={() => setTab("collab")}
           className={`rounded px-3 py-1 text-sm ${
             tab === "collab"
-              ? "bg-blue-600 text-white"
-              : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              ? "btn-primary btn-md"
+              : "btn-md bg-gray-100 text-gray-700 hover:bg-gray-200"
           }`}
         >
           協作榜
@@ -140,8 +140,8 @@ const LeaderBoardComponent = () => {
           onClick={() => setTab("finish")}
           className={`rounded px-3 py-1 text-sm ${
             tab === "finish"
-              ? "bg-blue-600 text-white"
-              : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              ? "btn-success btn-md"
+              : "btn-md bg-gray-100 text-gray-700 hover:bg-gray-200"
           }`}
         >
           完成者榜

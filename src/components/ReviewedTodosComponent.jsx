@@ -44,15 +44,33 @@ const ReviewedTodosComponent = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {todos.map((todo) => (
             <div key={todo.id} className="p-4 bg-white rounded shadow border border-gray-300">
-              <h3 className="text-xl font-bold mb-2">{todo.title}</h3>
-              <p className="text-gray-700 mb-2">{todo.description}</p>
-              <p className="text-sm font-semibold">
-                完成狀態：{todo.completed ? '已完成' : '未完成'}
-              </p>
-              <p className="text-sm font-semibold mt-1">
-                審核狀態：{todo.reviewed ? '已審核' : '未審核'}
-              </p>
-              <p className="text-sm mt-1">截止日：{dayjs(todo.dueDate).format('YYYY-MM-DD')}</p>
+              <h3 className="text-lg font-semibold mb-1">{todo.title}</h3>
+              <p className="text-gray-700 mb-2 line-clamp-3">{todo.description}</p>
+
+              <div className="text-sm space-y-2">
+                {/* 1) 截止日 */}
+                {todo.dueDate && (
+                  <div className="flex items-center gap-2">
+                    <span className="text-gray-600">截止</span>
+                    <time
+                      className="text-gray-700 tabular-nums"
+                      dateTime={dayjs(todo.dueDate).format('YYYY-MM-DD')}
+                    >
+                      {dayjs(todo.dueDate).format('YYYY/MM/DD')}
+                    </time>
+                  </div>
+                )}
+
+                {/* 2+3) 完成膠囊 + 審核膠囊 */}
+                <div className="flex items-center gap-2">
+                  <span className="badge" data-kind={todo.completed ? 'completed' : 'todo'}>
+                    {todo.completed ? '已完成' : '未完成'}
+                  </span>
+                  <span className="badge" data-kind={todo.reviewed ? 'reviewed' : 'todo'}>
+                    {todo.reviewed ? '已審核' : '未審核'}
+                  </span>
+                </div>
+              </div>
             </div>
           ))}
         </div>

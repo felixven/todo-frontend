@@ -22,7 +22,7 @@ const MessageComponent = ({ todoId }) => {
 
   const fmt = (t) => (t ? dayjs.utc(t).local().format("YYYY-MM-DD HH:mm") : "—");
 
-  async function load() {
+  const load = async () => {
     setLoading(true);
     setError("");
     try {
@@ -47,7 +47,7 @@ const MessageComponent = ({ todoId }) => {
     }
   }, [items]);
 
-  async function onSubmit(e) {
+  const onSubmit = async (e) => {
     e.preventDefault();
     const content = text.trim();
     if (!content) return;
@@ -64,7 +64,7 @@ const MessageComponent = ({ todoId }) => {
     }
   }
 
-  async function onDelete(id, authorUsername) {
+  const onDelete = async (id, authorUsername) => {
     if (!isAdmin && authorUsername !== me) return; // 前端檢查；後端已把關
     setError("");
     try {
@@ -136,9 +136,7 @@ const MessageComponent = ({ todoId }) => {
         {/* 右邊送出按鈕，比 textarea 矮一些 */}
         <button
           disabled={!canSend}
-          className="inline-flex items-center justify-center shrink-0 whitespace-nowrap
-               h-8 px-3 rounded-md bg-indigo-600 text-xs font-semibold text-white
-               disabled:opacity-50"
+          className='btn-primary btn-md'
         >
           {sending ? "送出中…" : "送出"}
         </button>

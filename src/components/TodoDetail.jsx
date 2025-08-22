@@ -9,7 +9,7 @@ import MessageComponent from "./MessageComponent";
 import Loader from './Loader'
 dayjs.extend(utc);
 
-export default function TodoDetail() {
+const TodoDetail = () => {
   const { id } = useParams();
   const [todo, setTodo] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -95,53 +95,79 @@ export default function TodoDetail() {
         <p className="mb-4 whitespace-pre-wrap text-gray-700">{todo.description}</p>
 
         {/* 基本資訊（保持直式顯示） */}
-<div className="space-y-2 text-sm">
-  {todo.createdDate && (
-    <div>
-      建立日期：{dayjs(todo.createdDate).format("YYYY-MM-DD")}
+        <div className="space-y-2 text-sm">
+          {todo.createdDate && (
+    <div className="flex items-center gap-2">
+      <span className="text-gray-600">建立</span>
+      <time
+        className="text-gray-700 tabular-nums"
+        dateTime={dayjs(todo.createdDate).format("YYYY-MM-DD")}
+      >
+        {dayjs(todo.createdDate).format("YYYY/MM/DD")}
+      </time>
     </div>
   )}
 
   {todo.dueDate && (
-    <div>
-      截止日期：{dayjs(todo.dueDate).format("YYYY-MM-DD")}
+    <div className="flex items-center gap-2">
+      <span className="text-gray-600">截止</span>
+      <time
+        className="text-gray-700 tabular-nums"
+        dateTime={dayjs(todo.dueDate).format("YYYY-MM-DD")}
+      >
+        {dayjs(todo.dueDate).format("YYYY/MM/DD")}
+      </time>
+
       {!todo.completed && (
-        <>
-          {dueInDays < 0 ? (
-            <span className="ml-1 text-red-600">| 已逾期</span>
-          ) : (
-            <span className="ml-1 text-gray-600">｜剩 {dueInDays} 天</span>
-          )}
-        </>
+        <span className="badge" data-kind={dueInDays < 0 ? "overdue" : "todo"}>
+          {dueInDays < 0
+            ? `已逾期 ${Math.abs(dueInDays)} 天`
+            : dueInDays === 0
+            ? "今天到期"
+            : `剩 ${dueInDays} 天`}
+        </span>
       )}
     </div>
   )}
+          <div className="flex items-center gap-2 text-sm">
+            {todo.completed ? (
+              <>
+              {todo.overdue && (
+                  <span className="badge" data-kind="wasoverdue">曾逾期</span>
+                )}
+                <span className="badge" data-kind="completed">已完成</span>
+                <div className="flex items-center gap-2 text-xs text-gray-600">
+                  <span className="truncate max-w-[10rem]">{todo.completedByName || "—"}</span>
+                  <span className="h-3 w-px bg-gray-200" aria-hidden="true"></span>
+                  <time
+                    className="tabular-nums text-gray-500"
+                    dateTime={todo.completedAt ? dayjs.utc(todo.completedAt).local().toISOString() : undefined}
+                  >
+                    {todo.completedAt
+                      ? dayjs.utc(todo.completedAt).local().format("YYYY/MM/DD HH:mm")
+                      : "—"}
+                  </time>
+                </div>
+              </>
+            ) : (
+              <>
+                <span className="badge" data-kind="todo">未完成</span>
+                {todo.overdue && <span className="badge" data-kind="overdue">已逾期</span>}
+              </>
+            )}
+          </div>
 
-  <div>
-    完成狀態：
-    {todo.completed ? (
-      <span className="text-green-600">
-        已完成（{todo.completedByName || "—"}｜
-        {todo.completedAt
-          ? dayjs.utc(todo.completedAt).local().format("YYYY-MM-DD HH:mm")
-          : "—"}
-        {todo.overdue && <span className="ml-1 text-red-600">逾期</span>}
-        ）
-      </span>
-    ) : (
-      <span className="text-red-600">未完成</span>
-    )}
-  </div>
 
-  {todo.reviewed && (
-    <div>
-      審核：{todo.reviewedBy || "—"} ｜{" "}
-      {todo.reviewedAt
-        ? dayjs.utc(todo.reviewedAt).local().format("YYYY-MM-DD HH:mm")
-        : "—"}
-    </div>
-  )}
-</div>
+
+          {todo.reviewed && (
+            <div>
+              審核：{todo.reviewedBy || "—"} ｜{" "}
+              {todo.reviewedAt
+                ? dayjs.utc(todo.reviewedAt).local().format("YYYY-MM-DD HH:mm")
+                : "—"}
+            </div>
+          )}
+        </div>
 
 
         <div className="mt-4 flex flex-wrap gap-2">
@@ -151,11 +177,7 @@ export default function TodoDetail() {
               await load();
             }}
             disabled={disableComplete}
-            className={`rounded px-3 py-1 text-sm ${
-              disableComplete
-                ? "cursor-not-allowed bg-gray-300 text-gray-600"
-                : "bg-green-500 text-white hover:bg-green-600"
-            }`}
+            className={disableComplete ? 'btn-disabled btn-md' : 'btn-success btn-md'}
           >
             標記完成
           </button>
@@ -166,11 +188,7 @@ export default function TodoDetail() {
               await load();
             }}
             disabled={todo.reviewed}
-            className={`rounded px-3 py-1 text-sm ${
-              todo.reviewed
-                ? "cursor-not-allowed bg-gray-300 text-gray-600"
-                : "bg-gray-500 text-white hover:bg-gray-600"
-            }`}
+            className={todo.reviewed ? 'btn-variant-disabled btn-md' : 'btn-variant-neutral btn-md'}
           >
             標記未完成
           </button>
@@ -181,7 +199,7 @@ export default function TodoDetail() {
                 await reviewTodo(id);
                 await load();
               }}
-              className="rounded bg-purple-600 px-3 py-1 text-sm text-white hover:bg-purple-700"
+              className="btn-review"
             >
               審核
             </button>
@@ -236,8 +254,8 @@ export default function TodoDetail() {
                 const pct = Number.isFinite(rawPct)
                   ? rawPct
                   : total > 0
-                  ? (count / total) * 100
-                  : 0;
+                    ? (count / total) * 100
+                    : 0;
                 const pctClamped = Math.max(0, Math.min(100, pct));
 
                 return (
@@ -247,8 +265,7 @@ export default function TodoDetail() {
                   >
                     <div className="flex items-center justify-between text-sm">
                       {/* 名稱固定寬度避免被擠掉，超長時省略號 */}
-                      <span
-                        className="w-32 shrink-0 truncate font-medium text-gray-700"
+                       <span className="badge" data-kind="completed"
                         title={name}
                       >
                         {name}
@@ -285,3 +302,4 @@ export default function TodoDetail() {
     </div>
   );
 }
+export default TodoDetail;

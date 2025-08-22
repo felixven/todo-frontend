@@ -92,7 +92,7 @@ const TodoItems = ({ todoId, onSummary }) => {
                     />
                     <button
                         disabled={saving}
-                        className="shrink-0 rounded bg-indigo-600 px-3 py-2 text-sm font-semibold text-white disabled:opacity-50"
+                        className='btn-primary btn-md shrink-0 font-semibold'
                     >
                         新增
                     </button>
@@ -119,15 +119,27 @@ const TodoItems = ({ todoId, onSummary }) => {
                                     className="mt-1"
                                 />
                                 <div>
-                                    <div className={`text-sm ${it.completed ? "line-through text-gray-500" : ""}`}>
+                                    <div className={`mb-1 text-sm ${it.completed ? "line-through text-gray-500" : ""}`}>
                                         {it.title}
                                     </div>
+
                                     {it.completed && (
-                                        <div className="text-xs text-gray-500">
-                                            完成：{it.completedByName || "—"}｜{it.completedAt ? dayjs.utc(it.completedAt).local().format("YYYY-MM-DD HH:mm") : "—"}
+                                        <div className="flex items-center gap-2 text-xs text-gray-600">
+                                            <span className="badge" data-kind="completed">
+                                                {it.completedByName || "—"}
+                                            </span>
+                                            <time
+                                                className="tabular-nums text-gray-500"
+                                                dateTime={it.completedAt ? dayjs.utc(it.completedAt).local().toISOString() : undefined}
+                                            >
+                                                {it.completedAt
+                                                    ? dayjs.utc(it.completedAt).local().format("YYYY/MM/DD HH:mm")
+                                                    : "—"}
+                                            </time>
                                         </div>
                                     )}
                                 </div>
+
                             </label>
 
                             {isAdmin && (

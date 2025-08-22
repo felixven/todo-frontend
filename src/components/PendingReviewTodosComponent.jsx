@@ -33,7 +33,7 @@ const PendingReviewTodosComponent = () => {
   }, [isAdmin]);
 
   // 處理審核請求
-   const handleReview = async (id) => {
+  const handleReview = async (id) => {
     try {
       await reviewTodo(id);
       await listTodos(); // 成功後刷新列表
@@ -44,7 +44,7 @@ const PendingReviewTodosComponent = () => {
     }
   };
 
-   if (loading) return <Loader text="待審核清單載入中..." />;
+  if (loading) return <Loader text="待審核清單載入中..." />;
   if (error) {
     return (
       <div className="max-w-5xl mx-auto py-8 px-4">
@@ -67,23 +67,32 @@ const PendingReviewTodosComponent = () => {
             <div key={todo.id} className="bg-yellow-100 p-4 rounded shadow">
               <h3 className="text-lg font-semibold mb-1">{todo.title}</h3>
               <p className="text-gray-700 mb-2 line-clamp-3">{todo.description}</p>
-              <p className="text-sm font-semibold text-gray-600 mb-3">
-                狀態：已完成（待審核）
-              </p>
+              <div className="flex items-center gap-2 text-sm mb-3">
+                {/* 狀態 */}
+                <span className="badge" data-kind="todo">已完成</span>
+                {/* 若你想標記「曾逾期」可打開這顆 */}
+                {/* {todo.overdue && <span className="badge" data-kind="wasoverdue">曾逾期</span>} */}
 
-              {/* ✅ 新增完成者資訊 */}
-              <p className="text-sm font-semibold text-gray-600 mb-3">
-                完成者：{todo.completedBy}｜
-                {todo.completedAt
-                  ? dayjs.utc(todo.completedAt).local().format('YYYY-MM-DD HH:mm')
-                  : '無紀錄'}
-              </p>
+                {/* 完成者 */}
+                <span className="badge" data-kind="todo">{todo.completedByName || "—"}</span>
+
+                {/* 完成時間（灰色小膠囊） */}
+                <time
+                  className="inline-flex items-center rounded-md bg-gray-50 ring-1 ring-gray-200 px-2 py-0.5 text-xs text-gray-600 tabular-nums"
+                  dateTime={todo.completedAt ? dayjs.utc(todo.completedAt).local().toISOString() : undefined}
+                >
+                  {todo.completedAt
+                    ? dayjs.utc(todo.completedAt).local().format('YYYY/MM/DD HH:mm')
+                    : '無紀錄'}
+                </time>
+              </div>
+
 
               {/* ✅ 審核按鈕 */}
               {isAdmin && (
                 <button
                   onClick={() => handleReview(todo.id)}
-                  className="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1 rounded text-sm"
+                  className='btn-review btn-md'
                 >
                   審核
                 </button>

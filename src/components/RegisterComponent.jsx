@@ -16,7 +16,7 @@ const RegisterComponent = () => {
     const [loading, setLoading] = useState(false);
     const navigator = useNavigate();
 
-    async function handleRegistrationForm(e) {
+    const handleRegistrationForm = async (e) => {
         e.preventDefault();
 
         const newErrors = {};
@@ -184,7 +184,7 @@ const RegisterComponent = () => {
                             className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
                             onClick={(e) => handleRegistrationForm(e)}
                         > */}
-                    
+
                         <button
                             type="submit"
                             disabled={loading}

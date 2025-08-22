@@ -20,7 +20,7 @@ const ListTodoComponent = () => {
         listTodos();
     }, []);
 
-    async function listTodos() {
+    const listTodos = async () => {
         try {
             setLoading(true);
             const res = await getAllTodos();
@@ -42,42 +42,43 @@ const ListTodoComponent = () => {
             setError("任務清單載入失敗");
         }
         finally {
-      setLoading(false); // ★ 新增：結束載入
-    }
+            setLoading(false); // ★ 新增：結束載入
+        }
     }
 
 
-    function addNewTodo() {
+    const addNewTodo = () => {
         navigate('/add-todo');
-    }
+    };
 
-    function updateTodo(id) {
+    const updateTodo = (id) => {
         navigate(`/update-todo/${id}`);
-    }
+    };
 
-    function removeTodo(id) {
+    const removeTodo = (id) => {
         deleteTodo(id)
             .then(() => listTodos())
             .catch((error) => console.error(error));
-    }
+    };
 
-    function markCompleteTodo(id) {
+    const markCompleteTodo = (id) => {
         completeTodo(id)
             .then(() => listTodos())
             .catch((error) => console.error(error));
-    }
+    };
 
-    function markInCompleteTodo(id) {
+    const markInCompleteTodo = (id) => {
         inCompleteTodo(id)
             .then(() => listTodos())
             .catch((error) => console.error(error));
-    }
+    };
 
-    function handleReviewTodo(id) {
+    const handleReviewTodo = (id) => {
         reviewTodo(id)
             .then(() => listTodos())
             .catch((error) => console.error(error));
-    }
+    };
+
 
     if (loading) return <Loader text="任務清單載入中..." />;
     if (error) {
@@ -98,7 +99,7 @@ const ListTodoComponent = () => {
                 <div className="text-right mb-6">
                     <button
                         onClick={addNewTodo}
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+                        className='btn-primary btn-lg'
                     >
                         新增任務
                     </button>
@@ -137,40 +138,57 @@ const ListTodoComponent = () => {
 
                             {todo.createdDate && (
                                 <p className="text-sm text-gray-500 mb-2">
-                                    建立日期：{dayjs(todo.createdDate).format('YYYY-MM-DD')}
+                                    <time className="mr-2 tabular-nums" dateTime={todo.createdDate}>
+                                        建立日期：{dayjs(todo.createdDate).format('YYYY-MM-DD')}
+                                    </time>
                                 </p>
                             )}
 
                             {todo.dueDate && (
                                 <p className="text-sm mb-2 font-semibold">
-                                    截止日期：{todo.dueDate}
-                                    {dayjs(todo.dueDate).diff(dayjs(), 'day') < 0 && !todo.completed ? (
-                                        <span className="text-red-600 ml-1">| 已逾期</span>
-                                    ) : (
-                                        !todo.completed && (
-                                            <span className="text-gray-600 ml-1">
-                                                ｜ 剩 {dayjs(todo.dueDate).diff(dayjs(), 'day')} 天
-                                            </span>
-                                        )
+                                    截止日期：
+                                    <time className="mr-2 tabular-nums" dateTime={todo.dueDate}>
+                                        {dayjs(todo.dueDate).format("YYYY-MM-DD")}
+                                    </time>
+
+                                    {!todo.completed && (
+                                        <span className="badge" data-kind={dueInDays < 0 ? "overdue" : "todo"}>
+                                            {dueInDays < 0 ? `已逾期 ${Math.abs(dueInDays)} 天`
+                                                : dueInDays === 0 ? "今天到期" : `剩 ${dueInDays} 天`}
+                                        </span>
                                     )}
                                 </p>
+
                             )}
 
-                            <p className="text-sm mb-1 font-semibold">
-                                完成狀態：
-                                {todo.completed ? (
-                                    <span className="text-green-600">
-                                        已完成（{todo.completedByName || "—"}｜
-                                        {todo.completedAt
-                                            ? dayjs.utc(todo.completedAt).local().format("YYYY-MM-DD HH:mm")
-                                            : "—"}
-                                        {todo.overdue && <span className="ml-1 text-red-600">逾期</span>}
-                                        ）
-                                    </span>
-                                ) : (
-                                    <span className="text-red-600">未完成</span>
-                                )}
-                            </p>
+                           <p className="text-sm mb-1">
+  <span className="text-gray-700 font-semibold">完成狀態：</span>
+  {todo.completed ? (
+    <>
+      <span className="inline-flex items-center gap-1.5">
+        {todo.overdue && (
+          <span className="badge" data-kind="wasoverdue">曾逾期</span>
+        )}
+        <span className="badge" data-kind="completed">
+          {todo.completedByName || "—"}
+        </span>
+      </span>
+
+      <time
+        className="ml-2 tabular-nums text-gray-500"
+        dateTime={todo.completedAt ? dayjs.utc(todo.completedAt).local().toISOString() : undefined}
+      >
+        {todo.completedAt
+          ? dayjs.utc(todo.completedAt).local().format("YYYY/MM/DD HH:mm")
+          : "—"}
+      </time>
+    </>
+  ) : (
+    <span className="badge" data-kind="todo">未完成</span>
+  )}
+</p>
+
+
 
 
                             {/* {todo.completed && todo.completedBy && (
@@ -191,10 +209,7 @@ const ListTodoComponent = () => {
                                         <button
                                             onClick={() => updateTodo(todo.id)}
                                             disabled={todo.reviewed}
-                                            className={`px-3 py-1 rounded text-sm ${todo.reviewed
-                                                ? 'bg-gray-300 text-gray-600 cursor-not-allowed'
-                                                : 'bg-yellow-400 hover:bg-yellow-500 text-white'
-                                                }`}
+                                            className={todo.reviewed ? 'btn-disabled btn-md' : 'btn-edit btn-md'}
                                         >
                                             編輯
                                         </button>
@@ -202,7 +217,7 @@ const ListTodoComponent = () => {
                                         {/* 刪除按鈕：永遠可點擊 */}
                                         <button
                                             onClick={() => removeTodo(todo.id)}
-                                            className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm"
+                                            className="btn-danger btn-md"
                                         >
                                             刪除
                                         </button>
@@ -212,10 +227,7 @@ const ListTodoComponent = () => {
                                 <button
                                     onClick={() => markCompleteTodo(todo.id)}
                                     disabled={disableComplete}
-                                    className={`px-3 py-1 rounded text-sm ${disableComplete
-                                        ? 'bg-gray-300 text-gray-600 cursor-not-allowed'
-                                        : 'bg-green-500 hover:bg-green-600 text-white'
-                                        }`}
+                                    className={disableComplete ? 'btn-disabled btn-md' : 'btn-success btn-md'}
                                 >
                                     標記完成
                                 </button>
@@ -224,10 +236,10 @@ const ListTodoComponent = () => {
                                 <button
                                     onClick={() => markInCompleteTodo(todo.id)}
                                     disabled={disableIncomplete}
-                                    className={`px-3 py-1 rounded text-sm ${disableIncomplete
-                                        ? 'bg-gray-300 text-gray-600 cursor-not-allowed'
-                                        : 'bg-gray-500 hover:bg-gray-600 text-white'
-                                        }`}
+                                    className={disableIncomplete
+                                        ? 'btn-variant-disabled btn-md'
+                                        : 'btn-variant-neutral btn-md'}
+
                                     title={disableIncomplete ? '需符合完成條件且任務已完成' : ''}
                                 >
                                     標記未完成
@@ -236,7 +248,7 @@ const ListTodoComponent = () => {
 
                                 <button
                                     onClick={() => navigate(`/todos/${todo.id}`)}
-                                    className="px-3 py-1 rounded text-sm bg-blue-600 hover:bg-blue-700 text-white"
+                                    className="btn-primary btn-sm"
                                 >
                                     進入任務
                                 </button>
@@ -244,7 +256,7 @@ const ListTodoComponent = () => {
                                 {isAdmin && todo.completed && !todo.reviewed && (
                                     <button
                                         onClick={() => handleReviewTodo(todo.id)}
-                                        className="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1 rounded text-sm"
+                                        className="btn-review btn-md"
                                     >
                                         審核
                                     </button>
