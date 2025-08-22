@@ -15,7 +15,7 @@ import TodoDetail from './components/TodoDetail'
 import PendingReviewTodosComponent from './components/PendingReviewTodosComponent'
 import ReviewedTodosComponent from './components/ReviewedTodosComponent'
 import OverdueTodosComponent from './components/OverdueTodosComponent'
-import LeaderBoardComponent from './components/LeaderBoardComponent'
+import LeaderBoardComponent from './components/LeaderboardComponent'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
