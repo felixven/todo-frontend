@@ -30,7 +30,6 @@ const ListTodoComponent = () => {
                         const { data: summary } = await getSummary(t.id);
                         return { ...t, summary };
                     } catch {
-                        // 沒細項或出錯就給預設
                         return { ...t, summary: { total: 0, completed: 0, progress: 0 } };
                     }
                 })
@@ -39,10 +38,10 @@ const ListTodoComponent = () => {
             setError("");
         } catch (error) {
             console.error(error);
-            setError("任務清單載入失敗");
+            setError("任務清單讀取失敗");
         }
         finally {
-            setLoading(false); // ★ 新增：結束載入
+            setLoading(false); 
         }
     }
 
@@ -80,7 +79,7 @@ const ListTodoComponent = () => {
     };
 
 
-    if (loading) return <Loader text="任務清單載入中..." />;
+    if (loading) return <Loader text="任務清單讀取中..." />;
     if (error) {
         return (
             <div className="max-w-5xl mx-auto py-8 px-4 min-h-screen">

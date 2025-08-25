@@ -57,7 +57,7 @@ const TodoItems = ({ todoId, onSummary }) => {
     };
 
     const onDelete = async (itemId) => {
-        if (!confirm("確定刪除此細項？")) return;
+        if (!confirm("確定刪除子任務？")) return;
         await deleteItem(todoId, itemId);
         await loadAll();
     };
@@ -67,7 +67,7 @@ const TodoItems = ({ todoId, onSummary }) => {
     return (
         <div className="rounded-xl border border-gray-200 bg-white p-4">
             <div className="mb-3 flex items-center justify-between">
-                <h3 className="text-base font-semibold">細項進度</h3>
+                <h3 className="text-base font-semibold">任務進度</h3>
                 <div className="text-sm text-gray-600">
                     {sum.completed} / {sum.total}（{percent}%）
                 </div>
@@ -87,7 +87,7 @@ const TodoItems = ({ todoId, onSummary }) => {
                     <input
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
-                        placeholder="新增細項…"
+                        placeholder="新增子任務…"
                         className="w-full rounded border border-gray-300 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-300"
                     />
                     <button
@@ -103,7 +103,7 @@ const TodoItems = ({ todoId, onSummary }) => {
             {loading ? (
                 <div className="text-sm text-gray-500">載入中…</div>
             ) : items.length === 0 ? (
-                <div className="text-sm text-gray-500">尚無細項</div>
+                <div className="text-sm text-gray-500">尚無子任務</div>
             ) : (
                 <ul className="space-y-2">
                     {items.map((it) => (
@@ -146,7 +146,7 @@ const TodoItems = ({ todoId, onSummary }) => {
                                 <button
                                     onClick={() => onDelete(it.id)}
                                     className="text-xs text-red-600 hover:underline"
-                                    title="刪除細項"
+                                    title="刪除子任務"
                                 >
                                     刪除
                                 </button>

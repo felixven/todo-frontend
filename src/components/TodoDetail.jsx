@@ -211,7 +211,7 @@ const TodoDetail = () => {
           <TodoItems todoId={id} onSummary={setItemsSummary} />
           {hasItems && !allItemsDone && (
             <div className="mt-2 text-sm text-gray-500">
-              有細項的任務需全部完成後才能「標記完成」。
+              子任務需全部完成後才能把任務「標記完成」。
             </div>
           )}
         </div>

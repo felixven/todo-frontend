@@ -163,7 +163,7 @@ const TodoComponent = () => {
 
           {/* 細項（新增 / 編輯一致） */}
           <div className="mb-6">
-            <label className="block text-gray-700 mb-2">細項（可多筆）</label>
+            <label className="block text-gray-700 mb-2">子任務（可多筆）</label>
 
             {/* 既有細項（編輯模式；預刪除） */}
             {id && (
@@ -198,7 +198,7 @@ const TodoComponent = () => {
                     );
                   })
                 ) : (
-                  <div className="text-sm text-gray-500">目前沒有細項</div>
+                  <div className="text-sm text-gray-500">目前沒有子任務</div>
                 )}
               </div>
             )}

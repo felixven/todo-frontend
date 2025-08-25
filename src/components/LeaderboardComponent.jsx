@@ -70,8 +70,8 @@ const LeaderBoardComponent = () => {
     setDetailOpen(true);
     setDetailTitle(
       tab === "collab"
-        ? `完成細項明細 - ${row.userName}（userId: ${row.userId}）`
-        : `完成任務明細 - ${row.userName}（userId: ${row.userId}）`
+        ? `子任務參與度紀錄 - ${row.userName}（userId: ${row.userId}）`
+        : `任務完成紀錄 - ${row.userName}（userId: ${row.userId}）`
     );
     setDetailLoading(true);
     setDetailError("");
@@ -153,7 +153,7 @@ const LeaderBoardComponent = () => {
         <div className="border-b px-4 py-3">
           <span className="text-sm text-gray-700">
             {tab === "collab"
-              ? "協作參與次數為完成過的所有細項"
+              ? "協作參與度為完成過的所有子任務"
               : "任務完成數為曾點擊『完成』的任務數"}
           </span>
         </div>
@@ -216,7 +216,7 @@ const LeaderBoardComponent = () => {
             <thead>
               <tr className="text-left">
                 <th className="px-3 py-2 font-medium text-gray-600">任務</th>
-                <th className="px-3 py-2 font-medium text-gray-600">細項</th>
+                <th className="px-3 py-2 font-medium text-gray-600">子任務</th>
                 <th className="px-3 py-2 font-medium text-gray-600">完成時間</th>
               </tr>
             </thead>
