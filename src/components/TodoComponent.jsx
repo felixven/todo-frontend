@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useState } from 'react'
 import { getTodo, saveTodo, updateTodo } from '../services/TodoService'
-import { listItems, addItem } from "../services/TodoItemService";
+import { listItems, addItem, deleteItem } from "../services/TodoItemService";
 import { useNavigate, useParams } from 'react-router-dom'
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
@@ -57,51 +57,68 @@ const TodoComponent = () => {
 
   // 標記 / 取消預刪除
   const togglePendingDelete = (itemId) => {
+    const idNum = Number(itemId); // 保證型別一致
     setPendingDeletes((prev) => {
       const next = new Set(prev);
-      next.has(itemId) ? next.delete(itemId) : next.add(itemId);
+      if (next.has(idNum)) {
+        next.delete(idNum);
+      } else {
+        next.add(idNum);
+      }
       return next;
     });
   };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSaving(true);
 
+    const todoId = Number(id); // 確保數字型別
     const todo = { title, dueDate, description, completed };
 
     try {
       if (id) {
         // 更新主任務
-        await updateTodo(id, todo);
+        await updateTodo(todoId, todo);
 
-        // 先處理預刪除（既有細項）
-        if (pendingDeletes.size > 0) {
-          await Promise.all(
-            Array.from(pendingDeletes).map((itemId) => deleteItem(id, itemId))
-          );
+        // 刪除已標記的子任務（逐筆執行，避免一筆失敗影響其他刪除）
+        const deletes = Array.from(pendingDeletes);
+        if (deletes.length > 0) {
+          for (const itemId of deletes) {
+            try {
+              await deleteItem(todoId, itemId);
+            } catch (err) {
+              console.error("刪除失敗", todoId, itemId, err.response?.status, err.response?.data);
+            }
+          }
         }
 
-        // 再新增「新增列」裡非空白的細項
+        // 新增子任務（非空白）
         const payloads = newItems.map((i) => i.title.trim()).filter(Boolean);
-        for (const t of payloads) await addItem(id, t);
+        for (const t of payloads) {
+          await addItem(todoId, t);
+        }
       } else {
         // 新增主任務
         const { data: saved } = await saveTodo(todo);
-        const todoId = saved.id;
+        const todoIdNew = saved.id;
 
-        // 新增細項
+        // 新增子任務
         const payloads = newItems.map((i) => i.title.trim()).filter(Boolean);
-        for (const t of payloads) await addItem(todoId, t);
+        for (const t of payloads) {
+          await addItem(todoIdNew, t);
+        }
       }
 
-      navigate("/todos");
+      navigate("/todos"); // 全部完成後返回清單
     } catch (err) {
-      console.error(err);
+      console.error("更新失敗", err);
     } finally {
       setSaving(false);
     }
   };
+
 
   return (
     <div className="flex items-center justify-center min-h-[calc(100vh-4rem)] pt-10 bg-gray-100">
