@@ -28,7 +28,7 @@
 # 系統展示
 
 **系統網址**  
-[www.ff.com](http://www.ff.com)
+[todo-ms-chi.vercel.app](https://todo-ms-chi.vercel.app/)
 
 **測試帳號 / 密碼**
 <br>
@@ -36,8 +36,8 @@
 
 | Role   | 帳號   | 電郵                     |密碼      |
 |--------|-------|-------------------------|----------|
-| Admin  | admin | admin@example.com       |admin123  |
-| User   |  user | user@example.com        |user123   |
+| Admin  | admin | admin@example.com       |admin1234 |
+| User   |  user | user@example.com        |user1234  |
 
 ### 任務新增、編輯、刪除（Admin權限）
 <br/>
