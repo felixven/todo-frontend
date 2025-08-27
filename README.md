@@ -66,7 +66,7 @@
 只有留言者本人能刪除自己的留言
 ![User Delete Message](docs/user-delete-message-flow.gif)
 Admin能刪除所有人的留言
-![Admin Delete Message](admin-delete-message-flow.gif)
+![Admin Delete Message](docs/admin-delete-message-flow.gif)
 <br/><br/>
 
 ### 顯示任務完成進度、參與度
