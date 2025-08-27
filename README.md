@@ -57,7 +57,7 @@
 <br/>
 
 ### 任務編輯更新
-![Edit Todo Flow](docs/edit-todo-flow.gif)
+![Update Todo Flow](docs/update-todo.gif)
 <br/>
 
 ### 任務「參與」、「完成」、「未完成」
