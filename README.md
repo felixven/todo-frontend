@@ -39,14 +39,21 @@
 | Admin  | admin | admin@example.com       |admin1234 |
 | User   |  user | user@example.com        |user1234  |
 
-### 任務新增、編輯、刪除（Admin權限）
-![Add Todo Flow](docs/add-todo-flow.gif)
-<br/>
 
 ### 所有任務總覽
+![Todo Stats Dashboard](docs/todo-stats-dashboard)
 <br/>
 
 ### 單一任務詳細頁面
+![Todo Detail](docs/todo-detail)
+<br/>
+
+### 任務新增、子任務新增
+![Add Todo Flow](docs/add-todo-flow.gif)
+<br/>
+
+### 任務編輯更新
+![Edit Todo Flow](docs/edit-todo-flow.gif)
 <br/>
 
 ### 任務「參與」、「完成」、「未完成」
