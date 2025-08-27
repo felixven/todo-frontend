@@ -41,15 +41,19 @@
 
 
 ### 所有任務總覽
-![Todo Stats Dashboard](docs/todo-stats-dashboard)
+![Todo Stats Dashboard](docs/todo-stats-dashboard.png)
+<br/>
+
+### 所有任務列表
+![List Todo Page](docs/list-todo.png)
 <br/>
 
 ### 單一任務詳細頁面
-![Todo Detail](docs/todo-detail)
+![Todo Detail](docs/todo-detail.png)
 <br/>
 
 ### 任務新增、子任務新增
-![Add Todo Flow](docs/add-todo-flow.gif)
+![Add Todo Flow](docs/update-todo.gif)
 <br/>
 
 ### 任務編輯更新
