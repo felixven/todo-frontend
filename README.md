@@ -40,15 +40,34 @@
 | User   |  user | user@example.com        |user1234  |
 
 ### 任務新增、編輯、刪除（Admin權限）
+![Add Todo Flow](docs/add-todo-flow.gif)
 <br/>
 
-### 顯示任務建立日期、截止日期和剩餘天數
+### 所有任務總覽
+<br/>
+
+### 單一任務詳細頁面
 <br/>
 
 ### 任務「參與」、「完成」、「未完成」
+在任務中勾選完成「子任務」，表示參與了該項任務
+![Complete Todo Item](docs/complete-todo-item.gif)
+
 曾參與過任務的使用者才有權限編輯任務之「完成」狀態，只有任務完成者才能將任務修改為「未完成」狀態
+![Particaipant Complete Todo](docs/participant-complete-todo.gif)
+
+不曾參與任務的使用者無法修改任務的「完成」、「未完成」狀態
+![Unauthorized Complete Todo](docs/unauthorized-complete-todo.gif)
 <br/>
 <br/>
+
+### 在任務內留言、刪除留言
+![Add Message](docs/add-message.gif)
+只有留言者本人能刪除自己的留言
+![User Delete Message](docs/user-delete-message-flow.gif)
+Admin能刪除所有人的留言
+![Admin Delete Message](admin-delete-message-flow.gif)
+<br/><br/>
 
 ### 顯示任務完成進度、參與度
 擁有細項之參與度才會選擇參與度
@@ -56,6 +75,7 @@
 
 ### 任務審核（Admin權限）
 被審核之任務會顯示審核資訊，並且不得再進行編輯、參與及更改完成狀態
+![Review Todo Flow](review-todo-flow.gif)
 <br/><br/>
 
 ### 排行榜
