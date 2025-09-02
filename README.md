@@ -1,4 +1,4 @@
-# 任務管理系統（Todo Management System）
+# 任務管理系統（Task Management System）
 
 # 系統介紹
 - 本專案為 **任務管理系統（Task Management System）**，由練習基礎語法的 Todo Management System 延伸而來，後續嘗試將工作中接觸到的技術與研究概念融入系統設計，進一步擴充功能與介面。  
