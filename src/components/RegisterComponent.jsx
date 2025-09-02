@@ -47,8 +47,8 @@ const RegisterComponent = () => {
         }
 
         setErrors({});
-        if (loading) return;   // 避免重複送出
-        setLoading(true);      // 進入載入中
+        if (loading) return; 
+        setLoading(true); 
 
 
         try {
@@ -84,7 +84,7 @@ const RegisterComponent = () => {
                 setErrors({ general: "註冊失敗，請稍後再試。" });
             }
         } finally {
-            setLoading(false); // ✅ 無論成功失敗都結束 loading
+            setLoading(false); 
         }
     }
 
@@ -94,7 +94,6 @@ const RegisterComponent = () => {
             <div className="w-full max-w-md bg-white shadow-md rounded px-8 py-6">
                 <h2 className="text-2xl font-semibold text-center mb-6">帳號註冊</h2>
 
-                {/* 2025/05/02 更動 */}
                 {/* <form> */}
                 <form onSubmit={handleRegistrationForm}>
                     <div className="mb-4">
@@ -179,11 +178,7 @@ const RegisterComponent = () => {
                     )}
 
                     <div>
-                        {/* 2025/05/02 更動 */}
-                        {/* <button 
-                            className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
-                            onClick={(e) => handleRegistrationForm(e)}
-                        > */}
+
 
                         <button
                             type="submit"

@@ -5,12 +5,12 @@ import Loader from "./Loader";
 
 const ReviewedTodosComponent = () => {
   const [todos, setTodos] = useState([]);
-  const [loading, setLoading] = useState(true); // ★ 新增：整頁載入狀態
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
     (async () => {
-      setLoading(true);                         // ★ 開始載入
+      setLoading(true);
       try {
         const res = await getReviewedTodos();
         setTodos(res?.data ?? []);
@@ -19,12 +19,12 @@ const ReviewedTodosComponent = () => {
         console.error('已審核任務載入失敗', e);
         setError('已審核任務載入失敗');
       } finally {
-        setLoading(false);                      // ★ 結束載入
+        setLoading(false);
       }
     })();
   }, []);
 
-  if (loading) return <Loader text="已審核任務載入中..." />;
+  if (loading) return <Loader text="已審核任務讀取中..." />;
   if (error) {
     return (
       <div className="max-w-5xl mx-auto py-8 px-4">
@@ -48,7 +48,6 @@ const ReviewedTodosComponent = () => {
               <p className="text-gray-700 mb-2 line-clamp-3">{todo.description}</p>
 
               <div className="text-sm space-y-2">
-                {/* 1) 截止日 */}
                 {todo.dueDate && (
                   <div className="flex items-center gap-2">
                     <span className="text-gray-600">截止</span>
@@ -61,7 +60,6 @@ const ReviewedTodosComponent = () => {
                   </div>
                 )}
 
-                {/* 2+3) 完成膠囊 + 審核膠囊 */}
                 <div className="flex items-center gap-2">
                   <span className="badge" data-kind={todo.completed ? 'completed' : 'todo'}>
                     {todo.completed ? '已完成' : '未完成'}

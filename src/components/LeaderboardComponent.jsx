@@ -3,10 +3,9 @@ import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import {getCollabBoard,getCollabDetails,getFinisherBoardById,getFinisherDetailsByUserId,} from "../services/LeaderboardService";
-import Loader from "./Loader"; // 共用 Loader（支援 height/size）
+import Loader from "./Loader";
 dayjs.extend(utc);
 
-// 簡單 Modal
 const Modal = ({ open, title, onClose, children }) => {
   if (!open) return null;
   return (
@@ -31,17 +30,17 @@ const Modal = ({ open, title, onClose, children }) => {
 const LeaderBoardComponent = () => {
   const [tab, setTab] = useState("collab"); // collab | finish
   const [loading, setLoading] = useState(false);
-  const [rows, setRows] = useState([]); // 主表格資料
+  const [rows, setRows] = useState([]); 
   const [error, setError] = useState("");
 
-  // Modal 狀態
+
   const [detailOpen, setDetailOpen] = useState(false);
   const [detailTitle, setDetailTitle] = useState("");
   const [detailLoading, setDetailLoading] = useState(false);
   const [detailError, setDetailError] = useState("");
   const [detailRows, setDetailRows] = useState([]);
 
-  // 依分頁載入榜單
+
   useEffect(() => {
     let cancelled = false;
     const load = async () => {
@@ -65,7 +64,6 @@ const LeaderBoardComponent = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tab]);
 
-  // 點數字開明細
   const openDetail = async (row) => {
     setDetailOpen(true);
     setDetailTitle(
@@ -91,11 +89,10 @@ const LeaderBoardComponent = () => {
     }
   };
 
-  // 表格欄定義（兩個分頁共用 UI，不同資料）
+
   const header =
     tab === "collab" ? ["使用者", "協作參與次數"] : ["使用者", "任務完成數"];
 
-  // 頁面級載入 / 錯誤快速返回
   if (loading) {
     return (
       <Loader
@@ -122,7 +119,6 @@ const LeaderBoardComponent = () => {
         <p className="text-sm text-gray-600">協作榜與完成者榜</p>
       </div>
 
-      {/* Tabs */}
       <div className="mb-4 flex gap-2">
         <button
           type="button"
@@ -148,7 +144,6 @@ const LeaderBoardComponent = () => {
         </button>
       </div>
 
-      {/* 卡片 */}
       <div className="rounded-lg border border-gray-300 bg-white shadow">
         <div className="border-b px-4 py-3">
           <span className="text-sm text-gray-700">
@@ -158,7 +153,6 @@ const LeaderBoardComponent = () => {
           </span>
         </div>
 
-        {/* 內容（已簡化：不再判斷 loading/error，因為上層已 return） */}
         <div className="p-4">
           {rows.length === 0 ? (
             <div className="py-6 text-center text-gray-500">目前沒有資料</div>
@@ -198,7 +192,6 @@ const LeaderBoardComponent = () => {
         </div>
       </div>
 
-      {/* 明細 Modal */}
       <Modal
         open={detailOpen}
         onClose={() => setDetailOpen(false)}
@@ -211,7 +204,6 @@ const LeaderBoardComponent = () => {
         ) : detailRows.length === 0 ? (
           <div className="py-6 text-center text-gray-500">沒有明細</div>
         ) : tab === "collab" ? (
-          // 協作明細：[{ todoId, todoTitle, itemId, itemTitle, completedAt }]
           <table className="min-w-full text-sm">
             <thead>
               <tr className="text-left">
@@ -235,7 +227,7 @@ const LeaderBoardComponent = () => {
             </tbody>
           </table>
         ) : (
-          // 完成者明細：[{ todoId, todoTitle, completedAt }]
+
           <table className="min-w-full text-sm">
             <thead>
               <tr className="text-left">

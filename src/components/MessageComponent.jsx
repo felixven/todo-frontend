@@ -18,7 +18,7 @@ const MessageComponent = ({ todoId }) => {
   const [sending, setSending] = useState(false);
   const [error, setError] = useState("");
 
-  const listRef = useRef(null); // 自動捲到底
+  const listRef = useRef(null); 
 
   const fmt = (t) => (t ? dayjs.utc(t).local().format("YYYY-MM-DD HH:mm") : "—");
 
@@ -40,7 +40,7 @@ const MessageComponent = ({ todoId }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [todoId]);
 
-  // 列表更新後自動捲到最底
+
   useEffect(() => {
     if (listRef.current) {
       listRef.current.scrollTop = listRef.current.scrollHeight;
@@ -65,7 +65,7 @@ const MessageComponent = ({ todoId }) => {
   }
 
   const onDelete = async (id, authorUsername) => {
-    if (!isAdmin && authorUsername !== me) return; // 前端檢查；後端已把關
+    if (!isAdmin && authorUsername !== me) return; 
     setError("");
     try {
       await deleteMessage(todoId, id);
@@ -82,16 +82,14 @@ const MessageComponent = ({ todoId }) => {
     <div className="rounded-xl border border-gray-200 bg-white p-4">
       <h3 className="mb-3 text-base font-semibold">留言</h3>
 
-      {/* 錯誤提示 */}
       {error && (
         <div className="mb-3 rounded bg-red-50 p-2 text-sm text-red-700">
           {error}
         </div>
       )}
 
-      {/* 列表 */}
       {loading ? (
-        <div className="text-sm text-gray-500">留言載入中…</div>
+        <div className="text-sm text-gray-500">留言讀取中…</div>
       ) : items.length === 0 ? (
         <div className="text-sm text-gray-500">還沒有留言</div>
       ) : (
@@ -118,9 +116,7 @@ const MessageComponent = ({ todoId }) => {
         </div>
       )}
 
-      {/* 送出區 */}
       <form onSubmit={onSubmit} className="flex items-end gap-2">
-        {/* 左邊 textarea */}
         <textarea
           value={text}
           onChange={(e) => setText(e.target.value.slice(0, MAX_LEN))}
@@ -133,7 +129,6 @@ const MessageComponent = ({ todoId }) => {
           className="flex-1 resize-y rounded-lg border border-gray-300 p-2 text-sm outline-none focus:ring-2 focus:ring-indigo-300"
         />
 
-        {/* 右邊送出按鈕，比 textarea 矮一些 */}
         <button
           disabled={!canSend}
           className='btn-primary btn-md'
@@ -142,7 +137,6 @@ const MessageComponent = ({ todoId }) => {
         </button>
       </form>
 
-      {/* 字數提示分開 */}
       <div className="mt-1 text-right text-xs text-gray-500">{remaining} / {MAX_LEN}</div>
 
 

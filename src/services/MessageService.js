@@ -1,12 +1,12 @@
 import axios from "axios";
 import { getToken } from "./AuthService";
 
-const API_BASE = import.meta.env.VITE_BACK_END_URL; // 例：http://localhost:8080 或 https://your-api.com
+const API_BASE = import.meta.env.VITE_BACK_END_URL; 
 const BASE_REST_API_URL = `${API_BASE}/api/todos`;
 
   axios.interceptors.request.use(
   (config) => {
-    const raw = getToken(); // 可能是 "xxx" 或 "Bearer xxx"
+    const raw = getToken(); 
     if (raw) {
       const token = raw.startsWith("Bearer ") ? raw : `Bearer ${raw}`;
       config.headers.Authorization = token;

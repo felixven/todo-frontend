@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 @layer components {
-  /* 狀態標籤：深字 + 淡底 + 淡外圈 */
   .badge { @apply inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ring-1; }
   .badge[data-kind="todo"]       { @apply text-status-todo       bg-status-todo/10       ring-status-todo/20; }
   .badge[data-kind="inprogress"] { @apply text-status-inprogress bg-status-inprogress/10 ring-status-inprogress/20; }
@@ -11,7 +10,6 @@
   .badge[data-kind="overdue"]    { @apply text-status-overdue    bg-status-overdue/10    ring-status-overdue/20; }
   .badge[data-kind="wasoverdue"] { @apply text-status-wasoverdue bg-status-wasoverdue/10 ring-status-wasoverdue/20; }
 
-  /* 按鈕：主/次/成功/審核（紫）/危險（刪除時會用） */
   .btn { @apply inline-flex items-center justify-center
            rounded-md px-3 py-2 text-sm font-medium
            focus:outline-none focus:ring-2
@@ -30,7 +28,6 @@
            focus:outline-none focus:ring-2 focus:ring-gray-300;
   }
 
-  /* 停用：灰底灰字、不可點；關閉 hover/focus 效果 */
   .btn-variant-disabled {
     @apply bg-gray-300 text-gray-600 cursor-not-allowed
            hover:bg-gray-300 focus:ring-0;

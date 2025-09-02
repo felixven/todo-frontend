@@ -10,21 +10,21 @@ const PendingReviewTodosComponent = () => {
   const [todos, setTodos] = useState([]);
   const isAdmin = isAdminUser();
 
-  const [loading, setLoading] = useState(true); // ★ 新增：整頁載入狀態
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  // 封裝成 listTodos 方法，審核後也能重用
+
   const listTodos = async () => {
     try {
-      setLoading(true); // ★ 新增：開始載入
-      const response = await getPendingReviewTodos(); // 無論是否為 admin 都要能看到
+      setLoading(true);
+      const response = await getPendingReviewTodos();
       setTodos(response.data || []);
       setError('');
     } catch (e) {
       console.error(e);
       setError('待審核清單載入失敗');
     } finally {
-      setLoading(false); // ★ 新增：結束載入
+      setLoading(false); 
     }
   };
 
@@ -32,19 +32,17 @@ const PendingReviewTodosComponent = () => {
     listTodos();
   }, [isAdmin]);
 
-  // 處理審核請求
   const handleReview = async (id) => {
     try {
       await reviewTodo(id);
-      await listTodos(); // 成功後刷新列表
+      await listTodos(); 
     } catch (e) {
       console.error(e);
-      // ★ 新增：簡單提醒（不打斷 UI）
       alert('審核失敗，請稍後重試');
     }
   };
 
-  if (loading) return <Loader text="待審核清單載入中..." />;
+  if (loading) return <Loader text="待審核清單讀取中..." />;
   if (error) {
     return (
       <div className="max-w-5xl mx-auto py-8 px-4">

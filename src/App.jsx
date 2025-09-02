@@ -1,6 +1,3 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 import ListTodoComponent from './components/ListTodoComponent'
 import HeaderComponent from './components/HeaderComponent'
@@ -19,8 +16,6 @@ import LeaderBoardComponent from './components/LeaderboardComponent'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-//App的註解：base component or root component, within this app component, we can import and use the other react components
-//App component convert this updatedTodo into object into TodoDto
 function App() {
 
   function AuthenticatedRoute({ children }) {//secure route: enclose that route within this functional component
@@ -28,7 +23,7 @@ function App() {
     if (isAuth) {
       return children;
     }
-    return <Navigate to="/login" />//沒登入的人，帶到“/login”這個路徑，參考下面的Route，即是login頁面
+    return <Navigate to="/login" />
   }
   return (
     <>
@@ -36,34 +31,25 @@ function App() {
       <BrowserRouter>
         <HeaderComponent />
         <Routes>
-          {/* Routes acts as a container/parent for all the individual routed that will be created in our app */}
-
-
-          {/* http://localhost:8080 */}
-
-
+  
           <Route path='/' element={
             <AuthenticatedRoute>
               <MainPageComponent />
             </AuthenticatedRoute>
           }></Route>
 
-          {/* http://localhost:8080/todos */}
           <Route path='/todos' element={
             <AuthenticatedRoute>
               <ListTodoComponent />
-              {/* 上面 this is the children of AuthenticatedRoute component/method */}
             </AuthenticatedRoute>
           }></Route>
 
-          {/* http://localhost:8080/add-todo */}
           <Route path='/add-todo' element={
             <AuthenticatedRoute>
               <TodoComponent />
             </AuthenticatedRoute>
           }></Route>
 
-          {/* http://localhost:8080/update-todo/1 */}
           <Route path='/update-todo/:id' element={
             <AuthenticatedRoute>
               <TodoComponent />
@@ -101,10 +87,8 @@ function App() {
               </AuthenticatedRoute>
             }/>
 
-          {/* http://localhost:8080/register */}
           <Route path='/register' element={<RegisterComponent />}></Route>
 
-          {/* http://localhost:8080/login */}
           <Route path='/login' element={<LoginComponent />}></Route>
 
         </Routes>

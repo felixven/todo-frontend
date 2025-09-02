@@ -18,7 +18,6 @@ const HeaderComponent = () => {
   return (
     <header className="sticky top-0 z-50 bg-gray-800 text-white shadow-md">
       <nav className="max-w-6xl mx-auto flex justify-between items-center px-6 py-4">
-        {/* 左邊：Logo + 任務清單 */}
         <div className="flex items-center space-x-6">
           <NavLink
             to={isAuth ? "/" : "/login"}
@@ -46,7 +45,6 @@ const HeaderComponent = () => {
           )}
         </div>
 
-        {/* 右邊：註冊／登入／登出 */}
         <div className="flex items-center space-x-4">
           {!isAuth && (
             <>

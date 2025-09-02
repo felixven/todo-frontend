@@ -8,22 +8,21 @@ import { Spinners } from './Spinner';
 const LoginComponent = () => {
   const [username, setUserName] = useState('');
   const [password, setPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState(''); // ✅ 加入錯誤訊息狀態
-    const [loading, setLoading] = useState(false); 
+  const [errorMessage, setErrorMessage] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigator = useNavigate();
 
- const handleLoginForm = async (e) => {
+  const handleLoginForm = async (e) => {
     e.preventDefault();
 
-   // 避免重複送出
-    if (loading) return;             // ★ 新增：正在送出時直接忽略
-    setErrorMessage('');             // ★ 新增：送出前清錯誤
-    setLoading(true);                // ★ 新增：開始載入
+    if (loading) return;
+    setErrorMessage('');
+    setLoading(true);
 
-    // ✅ 前端欄位驗證
+
     if (!username.trim() || !password.trim()) {
       setErrorMessage('請輸入帳號與密碼');
-      setLoading(false);            // ★ 新增：恢復載入狀態
+      setLoading(false);
       return;
     }
 
@@ -42,14 +41,15 @@ const LoginComponent = () => {
       saveLoggedInUser(username, role, firstName, lastName);
       localStorage.setItem("user", JSON.stringify({ username, role, firstName, lastName }));
 
-      setErrorMessage(''); // 清除錯誤訊息
-      {role === "ROLE_ADMIN"
+      setErrorMessage('');
+      {
+        role === "ROLE_ADMIN"
         ? toast.success(`登入成功，歡迎 Admin ${firstName}！`)
-        : toast.success(`登入成功，歡迎 ${firstName}！`)};
+        : toast.success(`登入成功，歡迎 ${firstName}！`)
+      };
 
       setTimeout(() => {
-        navigator("/"); // ✅ 正確寫法是 navigate，不是 navigator
-        // window.location.reload(false); ← 建議先移除
+        navigator("/"); 
       }, 500);
     } catch (error) {
       console.error(error);
@@ -60,8 +60,8 @@ const LoginComponent = () => {
       } else {
         setErrorMessage("登入失敗，請稍後再試");
       }
-    }finally {
-      setLoading(false);            // ★ 新增：結束載入（成功或失敗都會執行）
+    } finally {
+      setLoading(false);        
     }
   };
 
@@ -70,7 +70,7 @@ const LoginComponent = () => {
       <div className="w-full max-w-md bg-white p-8 rounded shadow-md">
         <h2 className="text-2xl font-semibold text-center mb-6">使用者登入</h2>
 
-        {/* ✅ 顯示錯誤訊息 */}
+  
         {errorMessage && (
           <p className="text-red-500 text-center mb-4">{errorMessage}</p>
         )}
@@ -85,8 +85,8 @@ const LoginComponent = () => {
               placeholder="請輸入帳戶名稱或電郵"
               value={username}
               onChange={(e) => setUserName(e.target.value)}
-               autoComplete="username"            // ★ 新增：瀏覽器自動填入友善
-              disabled={loading}                 // ★ 新增：送出中鎖欄位（可選）
+              autoComplete="username"           
+              disabled={loading}             
             />
           </div>
 
@@ -99,24 +99,24 @@ const LoginComponent = () => {
               placeholder="請輸入密碼"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-               autoComplete="current-password"    // ★ 新增
-              disabled={loading}                 // ★ 新增：送出中鎖欄位（可選）
+              autoComplete="current-password"    
+              disabled={loading}                
             />
           </div>
 
-         <button
+          <button
             type="submit"
-            disabled={loading}                   // ★ 新增：送出中禁用按鈕
+            disabled={loading}                  
             className={`w-full font-semibold py-2 px-4 rounded transition
               ${loading
                 ? "bg-blue-400 cursor-not-allowed text-white"
                 : "bg-blue-600 hover:bg-blue-700 text-white"}`}
-            aria-busy={loading}                  // ★ 新增：a11y
+            aria-busy={loading}                  
             aria-live="polite"
           >
             {loading ? (
               <span className="flex gap-2 items-center justify-center">
-                <Spinners />                      {/* 你專案的 Spinner 小元件 */}
+                <Spinners />                     
                 登入中…
               </span>
             ) : (

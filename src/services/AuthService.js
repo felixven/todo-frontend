@@ -1,8 +1,6 @@
-//第一步
 import axios from 'axios'
 
-
-const API_BASE = import.meta.env.VITE_BACK_END_URL; // 例：http://localhost:8080
+const API_BASE = import.meta.env.VITE_BACK_END_URL; 
 const AUTH_REST_API_BASE_URL = `${API_BASE}/api/auth`;
 
 //function that make register api call using "axios.post" method

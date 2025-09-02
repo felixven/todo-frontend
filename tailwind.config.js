@@ -12,7 +12,7 @@ module.exports = {
           800:"#203594",900:"#162564"
         },
         status: {
-          todo: "#2563eb", // 藍（一般/待處理）
+          todo: "#2563eb", // 藍
           inprogress: "#06b6d4", // 青（進行中）
           completed: "#16a34a", // 綠（已完成）
           reviewed: "#7c3aed", // 紫（已審核）

@@ -7,25 +7,17 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 dayjs.extend(utc);
 
-
-
-dayjs.extend(utc);
-
 const TodoComponent = () => {
   const [title, setTitle] = useState("");
   const [dueDate, setDueDate] = useState("");
   const [description, setDescription] = useState("");
   const [completed, setCompleted] = useState(false);
 
-  // 新增中的細項輸入列（可多筆）
+
   const [newItems, setNewItems] = useState([{ title: "" }]);
-  // 既有細項（編輯模式）
   const [existingItems, setExistingItems] = useState([]);
-  // 預刪除集合：提交時才真的刪
   const [pendingDeletes, setPendingDeletes] = useState(new Set());
-
   const [saving, setSaving] = useState(false);
-
   const navigate = useNavigate();
   const { id } = useParams();
 
@@ -46,7 +38,6 @@ const TodoComponent = () => {
       .catch(() => setExistingItems([]));
   }, [id]);
 
-  // 新增細項列操作
   const onAddRow = () => setNewItems((arr) => [...arr, { title: "" }]);
   const onRemoveRow = (idx) =>
     setNewItems((arr) =>
@@ -55,9 +46,8 @@ const TodoComponent = () => {
   const onChangeRow = (idx, v) =>
     setNewItems((arr) => arr.map((it, i) => (i === idx ? { ...it, title: v } : it)));
 
-  // 標記 / 取消預刪除
   const togglePendingDelete = (itemId) => {
-    const idNum = Number(itemId); // 保證型別一致
+    const idNum = Number(itemId); 
     setPendingDeletes((prev) => {
       const next = new Set(prev);
       if (next.has(idNum)) {
@@ -74,15 +64,12 @@ const TodoComponent = () => {
     e.preventDefault();
     setSaving(true);
 
-    const todoId = Number(id); // 確保數字型別
+    const todoId = Number(id); 
     const todo = { title, dueDate, description, completed };
 
     try {
       if (id) {
-        // 更新主任務
         await updateTodo(todoId, todo);
-
-        // 刪除已標記的子任務（逐筆執行，避免一筆失敗影響其他刪除）
         const deletes = Array.from(pendingDeletes);
         if (deletes.length > 0) {
           for (const itemId of deletes) {
@@ -94,24 +81,21 @@ const TodoComponent = () => {
           }
         }
 
-        // 新增子任務（非空白）
         const payloads = newItems.map((i) => i.title.trim()).filter(Boolean);
         for (const t of payloads) {
           await addItem(todoId, t);
         }
       } else {
-        // 新增主任務
         const { data: saved } = await saveTodo(todo);
         const todoIdNew = saved.id;
 
-        // 新增子任務
         const payloads = newItems.map((i) => i.title.trim()).filter(Boolean);
         for (const t of payloads) {
           await addItem(todoIdNew, t);
         }
       }
 
-      navigate("/todos"); // 全部完成後返回清單
+      navigate("/todos");
     } catch (err) {
       console.error("更新失敗", err);
     } finally {
@@ -128,7 +112,6 @@ const TodoComponent = () => {
         </h2>
 
         <form onSubmit={handleSubmit}>
-          {/* 標題 */}
           <div className="mb-4">
             <label className="block text-gray-700 mb-1">任務標題</label>
             <input
@@ -141,7 +124,6 @@ const TodoComponent = () => {
             />
           </div>
 
-          {/* 說明 */}
           <div className="mb-4">
             <label className="block text-gray-700 mb-1">任務說明</label>
             <input
@@ -153,7 +135,6 @@ const TodoComponent = () => {
             />
           </div>
 
-          {/* 截止日 */}
           <div className="mb-4">
             <label className="block text-gray-700 mb-1">截止日期</label>
             <input
@@ -165,7 +146,6 @@ const TodoComponent = () => {
             />
           </div>
 
-          {/* 狀態 */}
           <div className="mb-6">
             <label className="block text-gray-700 mb-1">任務狀態</label>
             <select
@@ -178,11 +158,8 @@ const TodoComponent = () => {
             </select>
           </div>
 
-          {/* 細項（新增 / 編輯一致） */}
           <div className="mb-6">
             <label className="block text-gray-700 mb-2">子任務（可多筆）</label>
-
-            {/* 既有細項（編輯模式；預刪除） */}
             {id && (
               <div className="mb-3 space-y-2">
                 {existingItems.length > 0 ? (
@@ -220,7 +197,6 @@ const TodoComponent = () => {
               </div>
             )}
 
-            {/* 新增細項輸入列 */}
             <div className="space-y-2">
               {newItems.map((it, idx) => (
                 <div key={idx} className="flex gap-2">

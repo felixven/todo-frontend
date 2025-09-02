@@ -13,7 +13,7 @@ const ListTodoComponent = () => {
     const navigate = useNavigate();
     const isAdmin = isAdminUser();
 
-    const [loading, setLoading] = useState(true);   // ★ 新增
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
     useEffect(() => {
@@ -41,7 +41,7 @@ const ListTodoComponent = () => {
             setError("任務清單讀取失敗");
         }
         finally {
-            setLoading(false); 
+            setLoading(false);
         }
     }
 
@@ -115,13 +115,12 @@ const ListTodoComponent = () => {
 
                     const disableIncomplete = disableComplete || !todo.completed;
 
-                    // 根據截止日期計算卡片背景色
                     const cardStyle = dueInDays !== null && !todo.completed
                         ? dueInDays < 0
-                            ? 'bg-red-100 border-red-300'      // 已逾期（未完成）
+                            ? 'bg-red-100 border-red-300'
                             : dueInDays <= 3
-                                ? 'bg-yellow-100 border-yellow-300' // 三天內警示（未完成）
-                                : 'bg-white border-gray-300'        // 正常
+                                ? 'bg-yellow-100 border-yellow-300'
+                                : 'bg-white border-gray-300'
                         : 'bg-white border-gray-300';
 
                     return (
@@ -160,51 +159,37 @@ const ListTodoComponent = () => {
 
                             )}
 
-                           <p className="text-sm mb-1">
-  <span className="text-gray-700 font-semibold">完成狀態：</span>
-  {todo.completed ? (
-    <>
-      <span className="inline-flex items-center gap-1.5">
-        {todo.overdue && (
-          <span className="badge" data-kind="wasoverdue">曾逾期</span>
-        )}
-        <span className="badge" data-kind="completed">
-          {todo.completedByName || "—"}
-        </span>
-      </span>
+                            <p className="text-sm mb-1">
+                                <span className="text-gray-700 font-semibold">完成狀態：</span>
+                                {todo.completed ? (
+                                    <>
+                                        <span className="inline-flex items-center gap-1.5">
+                                            {todo.overdue && (
+                                                <span className="badge" data-kind="wasoverdue">曾逾期</span>
+                                            )}
+                                            <span className="badge" data-kind="completed">
+                                                {todo.completedByName || "—"}
+                                            </span>
+                                        </span>
 
-      <time
-        className="ml-2 tabular-nums text-gray-500"
-        dateTime={todo.completedAt ? dayjs.utc(todo.completedAt).local().toISOString() : undefined}
-      >
-        {todo.completedAt
-          ? dayjs.utc(todo.completedAt).local().format("YYYY/MM/DD HH:mm")
-          : "—"}
-      </time>
-    </>
-  ) : (
-    <span className="badge" data-kind="todo">未完成</span>
-  )}
-</p>
-
-
-
-
-                            {/* {todo.completed && todo.completedBy && (
-                            <p className="text-sm text-gray-600 mb-1">
-                                完成者：{todo.completedBy}
+                                        <time
+                                            className="ml-2 tabular-nums text-gray-500"
+                                            dateTime={todo.completedAt ? dayjs.utc(todo.completedAt).local().toISOString() : undefined}
+                                        >
+                                            {todo.completedAt
+                                                ? dayjs.utc(todo.completedAt).local().format("YYYY/MM/DD HH:mm")
+                                                : "—"}
+                                        </time>
+                                    </>
+                                ) : (
+                                    <span className="badge" data-kind="todo">未完成</span>
+                                )}
                             </p>
-                        )}
-                        {todo.reviewed && todo.reviewedBy && (
-                            <p className="text-sm text-gray-600">
-                                審核者：{todo.reviewedBy}
-                            </p>
-                        )} */}
+
 
                             <div className="flex flex-wrap gap-2">
                                 {isAdmin && (
                                     <>
-                                        {/* 編輯按鈕：reviewed=true 時不可點擊 */}
                                         <button
                                             onClick={() => updateTodo(todo.id)}
                                             disabled={todo.reviewed}
@@ -212,8 +197,6 @@ const ListTodoComponent = () => {
                                         >
                                             編輯
                                         </button>
-
-                                        {/* 刪除按鈕：永遠可點擊 */}
                                         <button
                                             onClick={() => removeTodo(todo.id)}
                                             className="btn-danger btn-md"

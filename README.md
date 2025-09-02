@@ -4,7 +4,7 @@
 - 本專案為 **任務管理系統（Task Management System）**，由練習基礎語法的 Todo Management System 延伸而來，後續嘗試將工作中接觸到的技術與研究概念融入系統設計，進一步擴充功能與介面。  
 - 系統採用 **前後端分離架構** 開發：前端以 **React.js** 建立使用者介面，後端則以 **Spring Boot + MySQL** 開發 API 服務。  
 - 功能涵蓋任務的新增、編輯、參與、刪除與完成，以及任務資訊與進度的即時呈現。 
-- 本檔案為 **前端原始碼**，後端原始碼請見：(link)
+- 本檔案為 **前端原始碼**，後端原始碼請見：[Task Management System | 後端原始碼](https://github.com/felixven/todo-backend.git)
 
 # 功能介紹
 - 使用者驗證：註冊、登入、登出，並支援表單驗證密碼、Email 格式、重複帳號。
@@ -86,13 +86,15 @@ Admin能刪除所有人的留言
 
 ### 任務審核（Admin權限）
 被審核之任務會顯示審核資訊，並且不得再進行編輯、參與及更改完成狀態
-![Review Todo Flow](review-todo-flow.gif)
+![Review Todo Flow](docs/review-todo-flow.gif)
 <br/><br/>
 
 ### 排行榜
 協作榜：各使用者參與過**參與者大於1**的任務才會被計算參與次數，點擊數字可以開啟查詢任務資訊
+![Collaboration Board](docs/collaboration-board.png)
 <br/>
 完成者榜：曾點擊「完成」任務之次數
+![Completion Board](docs/completion-board.png)
 <br/>
 
 # 建構技術

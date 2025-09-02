@@ -30,7 +30,6 @@ const TodoItems = ({ todoId, onSummary }) => {
 
     useEffect(() => {
         if (todoId) loadAll();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [todoId]);
 
     const toggleItem = async (it) => {
@@ -81,7 +80,6 @@ const TodoItems = ({ todoId, onSummary }) => {
                 />
             </div>
 
-            {/* 新增（Admin） */}
             {isAdmin && (
                 <form onSubmit={onAdd} className="mb-3 flex gap-2">
                     <input
@@ -99,7 +97,6 @@ const TodoItems = ({ todoId, onSummary }) => {
                 </form>
             )}
 
-            {/* 列表 */}
             {loading ? (
                 <div className="text-sm text-gray-500">載入中…</div>
             ) : items.length === 0 ? (
