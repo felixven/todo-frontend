@@ -47,8 +47,8 @@ const RegisterComponent = () => {
         }
 
         setErrors({});
-        if (loading) return; 
-        setLoading(true); 
+        if (loading) return;
+        setLoading(true);
 
 
         try {
@@ -84,12 +84,12 @@ const RegisterComponent = () => {
                 setErrors({ general: "註冊失敗，請稍後再試。" });
             }
         } finally {
-            setLoading(false); 
+            setLoading(false);
         }
     }
 
     return (
-        <div className="flex items-center justify-center min-h-[calc(100vh-4rem)] pt-10 bg-gray-100">
+        <div className="flex flex-col items-center justify-center min-h-[calc(100vh-4rem)] pt-10 bg-gray-100">
             <br /><br />
             <div className="w-full max-w-md bg-white shadow-md rounded px-8 py-6">
                 <h2 className="text-2xl font-semibold text-center mb-6">帳號註冊</h2>
@@ -198,6 +198,11 @@ const RegisterComponent = () => {
                         </button>
                     </div>
                 </form>
+            </div>
+            <div className="text-center mt-4">
+                <p className="text-gray-600 text-md">
+                    伺服器因休眠機制，喚醒可能需要一些時間
+                </p>
             </div>
         </div>
     )

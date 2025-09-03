@@ -44,12 +44,12 @@ const LoginComponent = () => {
       setErrorMessage('');
       {
         role === "ROLE_ADMIN"
-        ? toast.success(`登入成功，歡迎 Admin ${firstName}！`)
-        : toast.success(`登入成功，歡迎 ${firstName}！`)
+          ? toast.success(`登入成功，歡迎 Admin ${firstName}！`)
+          : toast.success(`登入成功，歡迎 ${firstName}！`)
       };
 
       setTimeout(() => {
-        navigator("/"); 
+        navigator("/");
       }, 500);
     } catch (error) {
       console.error(error);
@@ -61,16 +61,16 @@ const LoginComponent = () => {
         setErrorMessage("登入失敗，請稍後再試");
       }
     } finally {
-      setLoading(false);        
+      setLoading(false);
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-[calc(100vh-4rem)] pt-10 bg-gray-100">
+    <div className="flex flex-col items-center justify-center min-h-[calc(100vh-4rem)] pt-10 bg-gray-100">
       <div className="w-full max-w-md bg-white p-8 rounded shadow-md">
         <h2 className="text-2xl font-semibold text-center mb-6">使用者登入</h2>
 
-  
+
         {errorMessage && (
           <p className="text-red-500 text-center mb-4">{errorMessage}</p>
         )}
@@ -85,8 +85,8 @@ const LoginComponent = () => {
               placeholder="請輸入帳戶名稱或電郵"
               value={username}
               onChange={(e) => setUserName(e.target.value)}
-              autoComplete="username"           
-              disabled={loading}             
+              autoComplete="username"
+              disabled={loading}
             />
           </div>
 
@@ -99,24 +99,24 @@ const LoginComponent = () => {
               placeholder="請輸入密碼"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              autoComplete="current-password"    
-              disabled={loading}                
+              autoComplete="current-password"
+              disabled={loading}
             />
           </div>
 
           <button
             type="submit"
-            disabled={loading}                  
+            disabled={loading}
             className={`w-full font-semibold py-2 px-4 rounded transition
               ${loading
                 ? "bg-blue-400 cursor-not-allowed text-white"
                 : "bg-blue-600 hover:bg-blue-700 text-white"}`}
-            aria-busy={loading}                  
+            aria-busy={loading}
             aria-live="polite"
           >
             {loading ? (
               <span className="flex gap-2 items-center justify-center">
-                <Spinners />                     
+                <Spinners />
                 登入中…
               </span>
             ) : (
@@ -124,6 +124,11 @@ const LoginComponent = () => {
             )}
           </button>
         </form>
+      </div>
+      <div className="text-center mt-4">
+        <p className="text-gray-600 text-md">
+          伺服器因休眠機制，喚醒可能需要一些時間
+        </p>
       </div>
     </div>
   );
